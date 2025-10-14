@@ -1,0 +1,1017 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Type",
+        "assetType": "Type",
+        "globalAssetId": "https://admin-shell.io/idta/asset/DigitalNameplate/1/0"
+      },
+      "id": "https://admin-shell.io/idta/aas/DigitalNameplate/1/0",
+      "idShort": "SampleDigitalNameplateAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/1/0"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/1/0",
+      "idShort": "Nameplate",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "category": "PARAMETER",
+          "idShort": "ManufacturerName",
+          "modelType": "MultiLanguageProperty",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Legally valid designation of the natural or judicial person which is directly responsible for the design, production, packaging and labeling of a product in respect to its being brought into circulation.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO677#002"
+              }
+            ],
+            "type": "ExternalReference"
+          }
+        },
+        {
+          "category": "PARAMETER",
+          "idShort": "ManufacturerProductDesignation",
+          "modelType": "MultiLanguageProperty",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Short description of the product (short text).",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAW338#001"
+              }
+            ],
+            "type": "ExternalReference"
+          }
+        },
+        {
+          "category": "VARIABLE",
+          "idShort": "Address",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Address information of a business partner.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAQ832#005"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "category": "VARIABLE",
+              "idShort": "Department",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Administrative section within an organisation where a business partner is located.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO127#003"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "PARAMETER",
+              "idShort": "Street",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Street name and house number.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO128#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "Zipcode",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "ZIP code of address.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO129#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "POBox",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "P.O. box number.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO130#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "ZipCodeOfPOBox",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "ZIP code of P.O. box address.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO131#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "CityTown",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Town or city name.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO132#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "StateCounty",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Federal state; a part of a state.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO133#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "NationalCode",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Country code defined according to DIN EN ISO 3166-1.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO134#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "VATNumber",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "VAT (value added tax) identification number of the business partner.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO135#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "AddressRemarks",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Plain text characterizing address information for which there is no property.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO202#003"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "AddressOfAdditionalLink",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Web site address where information about the product or contact is given.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAQ326#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "Phone",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Phone number including type.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAQ833#005"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "VARIABLE",
+                  "idShort": "TelephoneNumber",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Complete telephone number to be called to reach a business partner.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO136#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "TypeOfTelephone",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Characterization of a telephone according to its location or usage.",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormChoices",
+                      "value": "Office;Office mobile;Secretary;Substitute;Home;Private mobile",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO137#003"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                }
+              ]
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "Fax",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Fax number including type.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAQ834#005"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "VARIABLE",
+                  "idShort": "FaxNumber",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Complete telephone number to be called to reach a business partner's fax machine.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO195#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "TypeOfFaxNumber",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Characterization of the fax according its location or usage.",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormChoices",
+                      "value": "Office;Secretary;Home",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO196#003"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                }
+              ]
+            },
+            {
+              "category": "VARIABLE",
+              "idShort": "Email",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "E-mail address and encryption method.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAQ836#005"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "VARIABLE",
+                  "idShort": "EmailAddress",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Electronic mail address of a business partner.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO198#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "PublicKey",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Public part of an unsymmetrical key pair to sign or encrypt text or messages.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO200#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "TypeOfEmailAddress",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Characterization of an e-mail address according to its location or usage.",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormChoices",
+                      "value": "Office;Secretary;Substitute;Home",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO199#003"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "TypeOfPublickKey",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Characterization of a public key according to its encryption process.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO201#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "PARAMETER",
+          "idShort": "ManufacturerProductFamily",
+          "modelType": "MultiLanguageProperty",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "2nd level of a 3 level manufacturer specific product hierarchy.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAU731#001"
+              }
+            ],
+            "type": "ExternalReference"
+          }
+        },
+        {
+          "category": "PARAMETER",
+          "idShort": "SerialNumber",
+          "modelType": "Property",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "ZeroToOne",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Unique combination of numbers and letters used to identify the device once it has been manufactured.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAM556#002"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "valueType": "xs:string"
+        },
+        {
+          "category": "PARAMETER",
+          "idShort": "YearOfConstruction",
+          "modelType": "Property",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Year as completion date of object.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAP906#001"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "valueType": "xs:string"
+        },
+        {
+          "category": "VARIABLE",
+          "idShort": "Markings",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "ZeroToOne",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Collection of product markings.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/Markings"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "category": "VARIABLE",
+              "idShort": "Marking",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "OneToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Individual information about the marking labelled on the device.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/Markings/Marking"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "VARIABLE",
+                  "idShort": "MarkingName",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Common name of the marking.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/Markings/Marking/MarkingName"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "category": "VARIABLE",
+                  "contentType": "image/png",
+                  "idShort": "MarkingFile",
+                  "modelType": "File",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Common picture or logo of the marking.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/Markings/Marking/MarkingFile"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "VARIABLE",
+                  "idShort": "MarkingAdditionalText",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToMany",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "FormInfo",
+                      "value": "Where applicable, additional information on the marking in plain text.",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/Markings/Marking/MarkingAdditionalText"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "VARIABLE",
+          "idShort": "AssetSpecificProperties",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "ZeroToOne",
+              "valueType": "xs:string"
+            },
+            {
+              "type": "FormInfo",
+              "value": "Collection of asset or guideline specific properties.",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/AssetSpecificProperties"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "category": "VARIABLE",
+              "idShort": "GuidelineSpecificProperties",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "OneToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "FormInfo",
+                  "value": "Asset specific nameplate information required by guideline, stipulation or legislation.",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/zvei/nameplate/1/0/Nameplate/AssetSpecificProperties/GuidelineSpecificProperties"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "VARIABLE",
+                  "idShort": "GuidelineForConformityDeclaration",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO856#002"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2693 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Type",
+        "assetType": "Type",
+        "defaultThumbnail": {
+          "contentType": "image/png",
+          "path": "/aasx/files/IDTA_02026-1-0_Cover_Thumbnail.png"
+        },
+        "globalAssetId": "https://admin-shell.io/idta/asset/ProvisionOf3DModels/1/0"
+      },
+      "id": "https://admin-shell.io/idta/aas/ProvisionOf3DModels/1/0",
+      "idShort": "ProvisionOf3DModelsAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/ProvisionOf3DModels/1/0"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "administration": {
+        "revision": "0",
+        "version": "1"
+      },
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/ProvisionOf3DModels/1/0",
+      "idShort": "Models3D",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "https://admin-shell.io/idta/Models3D/1/0"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "idShort": "Model3D",
+          "modelType": "SubmodelElementList",
+          "orderRelevant": true,
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "SMT/Cardinality",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/Models3D/Model3D/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "typeValueListElement": "SubmodelElementCollection",
+          "value": [
+            {
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "SMT/Cardinality",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/Models3D/Model3D/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "idShort": "File",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "idShort": "FileId",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileId/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileId/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "FileDomainId",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileId/FileDomaniId/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "ValueId",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileId/ValueId/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "IsPrimary",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToMany",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileId/IsPrimary/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:boolean"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "idShort": "FileVersion",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "Title",
+                              "modelType": "MultiLanguageProperty",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/Title/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              }
+                            },
+                            {
+                              "idShort": "FileName",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileName/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "FileVersionId",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileVersionID/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "StatusValue",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/StatusValue/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "SetDate",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SetDate/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:date"
+                            },
+                            {
+                              "idShort": "BasedOn",
+                              "modelType": "SubmodelElementList",
+                              "orderRelevant": true,
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/BasedOn/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "typeValueListElement": "ReferenceElement",
+                              "value": [
+                                {
+                                  "modelType": "ReferenceElement",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToMany",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/BasedOn/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "RefersTo",
+                              "modelType": "SubmodelElementList",
+                              "orderRelevant": true,
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/RefersTo/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "typeValueListElement": "ReferenceElement",
+                              "value": [
+                                {
+                                  "modelType": "ReferenceElement",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToMany",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/RefersTo/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "contentType": "image/png",
+                              "idShort": "PreviewFile",
+                              "modelType": "File",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/PreviewFile/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              }
+                            },
+                            {
+                              "contentType": "image/png",
+                              "idShort": "DigitalFile",
+                              "modelType": "File",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/DigitalFile/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              }
+                            },
+                            {
+                              "idShort": "ExternalFile",
+                              "modelType": "SubmodelElementList",
+                              "orderRelevant": true,
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "typeValueListElement": "SubmodelElementCollection",
+                              "value": [
+                                {
+                                  "modelType": "SubmodelElementCollection",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToMany",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "value": [
+                                    {
+                                      "idShort": "ExternalUrl",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/ExternalUrl/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "FileIdentifier",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/FileIdentifier/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "HostOrganization",
+                                      "modelType": "SubmodelElementCollection",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/HostOrganization/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "value": [
+                                        {
+                                          "idShort": "OrganizationName",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/HostOrganization/OrganizationName/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        },
+                                        {
+                                          "idShort": "OrganizationOfficialName",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/HostOrganization/OrganizationOfficialName/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "idShort": "Api",
+                                      "modelType": "SubmodelElementList",
+                                      "orderRelevant": true,
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "ZeroToOne",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/Api/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "typeValueListElement": "SubmodelElementCollection",
+                                      "value": [
+                                        {
+                                          "modelType": "SubmodelElementCollection",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "ZeroToMany",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/Api/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "value": [
+                                            {
+                                              "idShort": "ApiVersion",
+                                              "modelType": "Property",
+                                              "qualifiers": [
+                                                {
+                                                  "kind": "ConceptQualifier",
+                                                  "type": "SMT/Cardinality",
+                                                  "value": "One",
+                                                  "valueType": "xs:string"
+                                                }
+                                              ],
+                                              "semanticId": {
+                                                "keys": [
+                                                  {
+                                                    "type": "GlobalReference",
+                                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/Api/ApiVersion/1/0"
+                                                  }
+                                                ],
+                                                "type": "ExternalReference"
+                                              },
+                                              "valueType": "xs:string"
+                                            },
+                                            {
+                                              "idShort": "ApiDocumentationUrl",
+                                              "modelType": "Property",
+                                              "qualifiers": [
+                                                {
+                                                  "kind": "ConceptQualifier",
+                                                  "type": "SMT/Cardinality",
+                                                  "value": "ZeroToOne",
+                                                  "valueType": "xs:string"
+                                                }
+                                              ],
+                                              "semanticId": {
+                                                "keys": [
+                                                  {
+                                                    "type": "GlobalReference",
+                                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/Api/ApiDocumentationUrl/1/0"
+                                                  }
+                                                ],
+                                                "type": "ExternalReference"
+                                              },
+                                              "valueType": "xs:string"
+                                            },
+                                            {
+                                              "idShort": "ApiSpecificationUrl",
+                                              "modelType": "Property",
+                                              "qualifiers": [
+                                                {
+                                                  "kind": "ConceptQualifier",
+                                                  "type": "SMT/Cardinality",
+                                                  "value": "ZeroToOne",
+                                                  "valueType": "xs:string"
+                                                }
+                                              ],
+                                              "semanticId": {
+                                                "keys": [
+                                                  {
+                                                    "type": "GlobalReference",
+                                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ExternalFile/Api/ApiSpecificationUrl/1/0"
+                                                  }
+                                                ],
+                                                "type": "ExternalReference"
+                                              },
+                                              "valueType": "xs:string"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "FileFormat",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileFormat/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "FormatName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileFormat/FormatName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "FormatVersion",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileFormat/FormatVersion/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "FormatQualifier",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/FileFormat/FormatQualifier/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "SourceApplication",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "ApplicationName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/ApplicationName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "ApplicationVersion",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/ApplicationVersion/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "ApplicationQualifier",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/ApplicationQualifier/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "Api",
+                                  "modelType": "SubmodelElementList",
+                                  "orderRelevant": true,
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToOne",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/Api/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "typeValueListElement": "SubmodelElementCollection",
+                                  "value": [
+                                    {
+                                      "modelType": "SubmodelElementCollection",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "ZeroToMany",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/Api/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "value": [
+                                        {
+                                          "idShort": "ApiVersion",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/Api/ApiVersion/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        },
+                                        {
+                                          "idShort": "ApiDocumentationUrl",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "ZeroToOne",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/Api/ApiDocumentationUrl/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        },
+                                        {
+                                          "idShort": "ApiSpecificationUrl",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "ZeroToOne",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/Api/ApiSpecificationUrl/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "idShort": "VendorOrganization",
+                                  "modelType": "SubmodelElementCollection",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/VendorOrganization/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "value": [
+                                    {
+                                      "idShort": "OrganizationName",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/VendorOrganization/OrganizationName/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "OrganizationOfficialName",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/SourceApplication/VendorOrganization/OrganizationOfficialName/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "ProvidingOrganization",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ProvidingOrganization/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "OrganizationName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ProvidingOrganization/OrganizationName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "OrganizationOfficialName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileVersion/ProvidingOrganization//OrganizationOfficialName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "idShort": "ConsumingApplication",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "ApplicationName",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/ApplicationName/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "ApplicationVersion",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/ApplicationVersion/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "ApplicationQualifier",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/ApplicationQualifier1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "VendorOrganization",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/VendorOrganization/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "OrganizationName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/VendorOrganization/OrganizationName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "OrganizationOfficialName",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/VendorOrganization/OrganizationOfficialName/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "Api",
+                              "modelType": "SubmodelElementList",
+                              "orderRelevant": true,
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/Api/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "typeValueListElement": "SubmodelElementCollection",
+                              "value": [
+                                {
+                                  "modelType": "SubmodelElementCollection",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToMany",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/Api/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "value": [
+                                    {
+                                      "idShort": "ApiVersion",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/Api/ApiVersion/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "ApiDocumentationUrl",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "ZeroToOne",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/Api/ApiDocumentationUrl/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "ApiSpecificationUrl",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "ZeroToOne",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ConsumingApplication/Api/ApiSpecificationUrl/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "idShort": "FileClassification",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileClassification/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "OneToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileClassification/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "ClassId",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileClassification/ClassId/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "ClassName",
+                              "modelType": "MultiLanguageProperty",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/FileClassification/ClassName/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              }
+                            },
+                            {
+                              "idShort": "ClassificationSystem",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/File/ClassificationSystem/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "idShort": "Capability",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "SMT/Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "idShort": "PosModelPurpose",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/PosModelPurpose/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "Property",
+                      "value": [
+                        {
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/PosModelPurpose/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "valueTypeListElement": "xs:string"
+                    },
+                    {
+                      "idShort": "NegModelPurpose",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/NegModelPurpos/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "Property",
+                      "value": [
+                        {
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/NegModelPurpos/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "valueTypeListElement": "xs:string"
+                    },
+                    {
+                      "idShort": "EmbeddedInfo",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/EmbeddedInfo/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "Property",
+                      "value": [
+                        {
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/EmbeddedInfo/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "valueTypeListElement": "xs:string"
+                    },
+                    {
+                      "idShort": "State",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/State/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "Property",
+                      "value": [
+                        {
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/State/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "valueTypeListElement": "xs:string"
+                    },
+                    {
+                      "idShort": "ObjectType",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/ObjectType/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "idShort": "Origin",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Origin/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "idShort": "Simplification",
+                      "modelType": "SubmodelElementCollection",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Simplification/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": [
+                        {
+                          "idShort": "Description",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToOne",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Simplification/LevelDescription/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "idShort": "ReducedElements",
+                          "modelType": "SubmodelElementList",
+                          "orderRelevant": true,
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToOne",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Simplification/ReducedElements/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "typeValueListElement": "Property",
+                          "value": [
+                            {
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToMany",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Simplification/ReducedElements/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "valueTypeListElement": "xs:string"
+                        },
+                        {
+                          "idShort": "DerivedFrom",
+                          "modelType": "ReferenceElement",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToOne",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Capability/Simplification/DerivedFrom/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "idShort": "Geometry",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "SMT/Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "idShort": "Representation",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/Representation/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "idShort": "LengthUnit",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/LengthUnit/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "idShort": "CartBoundingBox",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "BoundingBoxKind",
+                              "modelType": "Property",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/BoundingBoxKind/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "valueType": "xs:string"
+                            },
+                            {
+                              "idShort": "CartRefSystem",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "CartOffsetVector",
+                                  "modelType": "SubmodelElementCollection",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToOne",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/CartOffsetVector/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "value": [
+                                    {
+                                      "idShort": "X",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/CartOffsetVector/X/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "Y",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/CartOffsetVector/Y/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "Z",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/CartOffsetVector/Z/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "idShort": "NormOrientationVector",
+                                  "modelType": "SubmodelElementList",
+                                  "orderRelevant": true,
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "ZeroToOne",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/NormOrientationVector/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "typeValueListElement": "SubmodelElementCollection",
+                                  "value": [
+                                    {
+                                      "modelType": "SubmodelElementCollection",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "Three",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/NormOrientationVector/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "value": [
+                                        {
+                                          "idShort": "X",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/NormOrientationVector/X/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        },
+                                        {
+                                          "idShort": "Y",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/NormOrientationVector/Y/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        },
+                                        {
+                                          "idShort": "Z",
+                                          "modelType": "Property",
+                                          "qualifiers": [
+                                            {
+                                              "kind": "ConceptQualifier",
+                                              "type": "SMT/Cardinality",
+                                              "value": "One",
+                                              "valueType": "xs:string"
+                                            }
+                                          ],
+                                          "semanticId": {
+                                            "keys": [
+                                              {
+                                                "type": "GlobalReference",
+                                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartRefSystem/NormOrientationVector/Z/1/0"
+                                              }
+                                            ],
+                                            "type": "ExternalReference"
+                                          },
+                                          "valueType": "xs:string"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "CartBoundingVector",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "One",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartBoundingVector/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "X",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartBoundingVector/X/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "Y",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartBoundingVector/Y/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "Z",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartBoundingBox/CartBoundingVector/Z/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "idShort": "CartRefSystem",
+                      "modelType": "SubmodelElementList",
+                      "orderRelevant": true,
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "typeValueListElement": "SubmodelElementCollection",
+                      "value": [
+                        {
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "SMT/Cardinality",
+                              "value": "ZeroToMany",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "idShort": "CartOffsetVector",
+                              "modelType": "SubmodelElementCollection",
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/CartOffsetVector/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "value": [
+                                {
+                                  "idShort": "X",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/CartOffsetVector/X/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "Y",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/CartOffsetVector/Y/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                },
+                                {
+                                  "idShort": "Z",
+                                  "modelType": "Property",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "One",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/CartOffsetVector/Z/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "valueType": "xs:string"
+                                }
+                              ]
+                            },
+                            {
+                              "idShort": "NormOrientationVector",
+                              "modelType": "SubmodelElementList",
+                              "orderRelevant": true,
+                              "qualifiers": [
+                                {
+                                  "kind": "ConceptQualifier",
+                                  "type": "SMT/Cardinality",
+                                  "value": "ZeroToOne",
+                                  "valueType": "xs:string"
+                                }
+                              ],
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/NormOrientationVector/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "typeValueListElement": "SubmodelElementCollection",
+                              "value": [
+                                {
+                                  "modelType": "SubmodelElementCollection",
+                                  "qualifiers": [
+                                    {
+                                      "kind": "ConceptQualifier",
+                                      "type": "SMT/Cardinality",
+                                      "value": "Three",
+                                      "valueType": "xs:string"
+                                    }
+                                  ],
+                                  "semanticId": {
+                                    "keys": [
+                                      {
+                                        "type": "GlobalReference",
+                                        "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/NormOrientationVector/1/0"
+                                      }
+                                    ],
+                                    "type": "ExternalReference"
+                                  },
+                                  "value": [
+                                    {
+                                      "idShort": "X",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/NormOrientationVector/X/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "Y",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/NormOrientationVector/Y/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    },
+                                    {
+                                      "idShort": "Z",
+                                      "modelType": "Property",
+                                      "qualifiers": [
+                                        {
+                                          "kind": "ConceptQualifier",
+                                          "type": "SMT/Cardinality",
+                                          "value": "One",
+                                          "valueType": "xs:string"
+                                        }
+                                      ],
+                                      "semanticId": {
+                                        "keys": [
+                                          {
+                                            "type": "GlobalReference",
+                                            "value": "https://admin-shell.io/idta/Models3D/Model3D/Geometry/CartRefSystem/NormOrientationVector/Z/1/0"
+                                          }
+                                        ],
+                                        "type": "ExternalReference"
+                                      },
+                                      "valueType": "xs:string"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

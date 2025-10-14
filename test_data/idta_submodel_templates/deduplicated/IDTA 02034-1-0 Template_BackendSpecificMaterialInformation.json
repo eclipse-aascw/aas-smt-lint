@@ -1,0 +1,183 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Instance"
+      },
+      "id": "https://example.com/ids/sm/8251_4151_4042_0268",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://example.com/ids/sm/8251_4151_4042_6668"
+            }
+          ],
+          "type": "ExternalReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "id": "https://example.com/ids/sm/8251_4151_4042_6668",
+      "idShort": "BackendSpecificMaterialInformation",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/1/0/"
+          }
+        ],
+        "type": "ExternalReference"
+      },
+      "submodelElements": [
+        {
+          "idShort": "MaterialSystemProperties",
+          "modelType": "SubmodelElementCollection",
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "idShort": "MaterialType",
+              "modelType": "Property",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/MaterialType/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "BaseUnitOfMeasure",
+              "modelType": "MultiLanguageProperty",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/BaseUnitOfMeasure/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "language": "en?",
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "idShort": "MaterialStatus",
+              "modelType": "Property",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/MaterialStatus/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "Industry",
+              "modelType": "Property",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/Industry/1/0https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/Industry/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "ProductName",
+              "modelType": "MultiLanguageProperty",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/ProductName/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "language": "en?",
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "idShort": "MaterialNumber",
+              "modelType": "Property",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/MaterialNumber/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "Description",
+              "modelType": "MultiLanguageProperty",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/Description/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "language": "en?",
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "idShort": "Plant",
+              "modelType": "Property",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/BackendSpecificMaterialInformation/MaterialSystemProperties/Plant/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

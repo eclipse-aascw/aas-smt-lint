@@ -1,0 +1,572 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Instance",
+        "assetType": "Instance",
+        "globalAssetId": "http://admin-shell.io/idta/asset/ControlComponentInstance/1/0"
+      },
+      "id": "http://admin-shell.io/idta/aas/ControlComponentInstance/1/0",
+      "idShort": "ControlComponentInstanceAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "http://admin-shell.io/idta/SubmodelTemplate/ControlComponentInstance/1/0"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "description": [
+        {
+          "language": "en",
+          "text": "A ControlComponentInstance Submodel."
+        }
+      ],
+      "id": "http://admin-shell.io/idta/SubmodelTemplate/ControlComponentInstance/1/0",
+      "idShort": "ControlComponentInstance",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "https://admin-shell.io/idta/ControlComponent/Instance/1/0"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "Reference between the component instance and its respective ControlComponentType Submodel."
+            }
+          ],
+          "idShort": "Type",
+          "modelType": "ReferenceElement",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/ControlComponent/Instance/Type/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          }
+        },
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "Collection of references to control endpoints supported by the instance of the component."
+            }
+          ],
+          "idShort": "Endpoints",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/ControlComponent/Instance/Endpoints/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "description": [
+                {
+                  "language": "en",
+                  "text": "A reference to a control endpoint."
+                }
+              ],
+              "idShort": "Endpoint",
+              "modelType": "ReferenceElement",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "PresetIdShort",
+                  "value": "To be filled; normally same as idShort, might be with {00}",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/ControlComponent/Instance/Endpoint/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            }
+          ]
+        },
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "Collection of skills offered by the component type"
+            }
+          ],
+          "idShort": "Skills",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/ControlComponent/Skills/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Contains the basic information to call (request the execution of) a skill, e.g. its signature"
+                }
+              ],
+              "idShort": "Skill",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "PresetIdShort",
+                  "value": "To be filled; normally same as idShort, might be with {00}",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/ControlComponent/Skill/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Name used to select the skill via its interface."
+                    }
+                  ],
+                  "idShort": "Name",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Name/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Name to display the skill, e.g. in an HMI or GUI."
+                    }
+                  ],
+                  "idShort": "DisplayName",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/DisplayName/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Boolean property that defines if the skill is (currently) disabled, e.g. not licensed, tested, suitable."
+                    }
+                  ],
+                  "idShort": "Disabled",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Disabled/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:boolean"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Collection of operation, operating, operational or execution modes (depending on the standard), in which the skill is available/allowed to execute."
+                    }
+                  ],
+                  "idShort": "Modes",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Modes/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Name of the operation, operating, operational or execution modes (depending on the standard), in which the skill is available/allowed to execute."
+                        }
+                      ],
+                      "idShort": "Mode",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "Multiplicity",
+                          "value": "OneToMany",
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "PresetIdShort",
+                          "value": "To be filled; normally same as idShort, might be with {00}",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/ControlComponent/Skill/Mode/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    }
+                  ]
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Collection of parameters used for the configuration of the skill."
+                    }
+                  ],
+                  "idShort": "Parameters",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameters/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Parameter used for the configuration of the skill."
+                        }
+                      ],
+                      "idShort": "Parameter",
+                      "modelType": "SubmodelElementCollection",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "Multiplicity",
+                          "value": "ZeroToMany",
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "PresetIdShort",
+                          "value": "To be filled; normally same as idShort, might be with {00}",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameter/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": [
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Name of the parameter."
+                            }
+                          ],
+                          "idShort": "Name",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Multiplicity",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameter/Name/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Indicates whether the parameter is an input (In) or an output (Out) of the skill. An InOut parameter can be set from outside and can also be changed from skill itself. "
+                            }
+                          ],
+                          "idShort": "Direction",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Multiplicity",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameter/Direction/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Data type as string used to interpret the parameter. "
+                            }
+                          ],
+                          "idShort": "Type",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Multiplicity",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameter/Type/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Collection of properties of the accepted values that the parameter may take."
+                            }
+                          ],
+                          "idShort": "Values",
+                          "modelType": "SubmodelElementCollection",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Multiplicity",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/ControlComponent/Skill/Parameter/Values/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Collection of references to the error codes of the component that may be triggered by this skill."
+                    }
+                  ],
+                  "idShort": "Errors",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Errors/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Collection of references to other skills, that this skill uses."
+                    }
+                  ],
+                  "idShort": "Uses",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/ControlComponent/Skill/Uses/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,923 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Type",
+        "assetType": "Type",
+        "globalAssetId": "https://admin-shell.io/idta/asset/ServiceRequestNotification/1/0"
+      },
+      "id": "https://admin-shell.io/idta/aas/ServiceRequestNotification/1/0",
+      "idShort": "ServiceRequestNotificationAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/ServiceRequestNotification/1/0"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "administration": {
+        "revision": "0",
+        "version": "1"
+      },
+      "description": [
+        {
+          "language": "en",
+          "text": "This submodel aims to standardize the description of a service request notification that can be used to create a service request notification for industrial assets or the asset creates it by itself."
+        }
+      ],
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/ServiceRequestNotification/1/0",
+      "idShort": "ServiceRequestNotification",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "0173-1#01-AHX443#001"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "category": "PARAMETER",
+          "displayName": [
+            {
+              "language": "de",
+              "text": "Anzahl Servicebedarfsmeldungen"
+            },
+            {
+              "language": "en",
+              "text": "Number Service Request Notification  "
+            }
+          ],
+          "idShort": "NumberOfServiceRequestNotifications",
+          "modelType": "Property",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "Cardinality",
+              "value": "ZeroToOne",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-ABI761#001"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "valueType": "xs:integer"
+        },
+        {
+          "displayName": [
+            {
+              "language": "de",
+              "text": "Servicebedarfsmeldung"
+            },
+            {
+              "language": "en",
+              "text": "Service request notification"
+            }
+          ],
+          "idShort": "ServiceRequestNotification",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "type": "Cardinality",
+              "value": "ZeroToMany",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-ABI788#001/0173-1#01-AHX444#001"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Gemeldet von"
+                },
+                {
+                  "language": "en",
+                  "text": "Reported by"
+                }
+              ],
+              "idShort": "ReportedBy",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI792#00/0173-1#01-AHX448#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Kundennummer"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Customer number"
+                    }
+                  ],
+                  "idShort": "CustomerNumber",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI769#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Sendendes System"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Sender system"
+                    }
+                  ],
+                  "entityType": "CoManagedEntity",
+                  "idShort": "SenderSystem",
+                  "modelType": "Entity",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI770#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Anzahl der Kontakte"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Number of contacts"
+                    }
+                  ],
+                  "idShort": "NumberOfContacs",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO203#004"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "The SMC \u201cContactInformation\u201d contains information on how to contact the manufacturer or an authorised service provider, e.g. when a maintenance service is required"
+                    }
+                  ],
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Kontaktinformationen"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Contact information"
+                    }
+                  ],
+                  "idShort": "ContactInformation",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "OneToMany",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAQ837#007/0173-1#01-ADR448#007"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                }
+              ]
+            },
+            {
+              "category": "PARAMETER",
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "ID der Bedarfsmeldung"
+                },
+                {
+                  "language": "en",
+                  "text": "ID of Service Request Notification"
+                }
+              ],
+              "idShort": "ServiceRequestNotificationId",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI772#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "category": "PARAMETER",
+              "idShort": "Status",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABH938#002"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "category": "PARAMETER",
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Priorit\u00e4t der Meldung"
+                },
+                {
+                  "language": "en",
+                  "text": "Priority of notification"
+                }
+              ],
+              "idShort": "Priority",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                },
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "DefaultValue",
+                  "value": "Medium",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI773#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "category": "PARAMETER",
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Betroffenes Asset"
+                },
+                {
+                  "language": "en",
+                  "text": "Related Asset"
+                }
+              ],
+              "entityType": "CoManagedEntity",
+              "idShort": "RelatedAsset",
+              "modelType": "Entity",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI774#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "category": "PARAMETER",
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Kurztext zur Servicebedarfsmeldung"
+                },
+                {
+                  "language": "en",
+                  "text": "Short text of Service Request"
+                }
+              ],
+              "idShort": "ShortText",
+              "modelType": "MultiLanguageProperty",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI762#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "language": "en",
+                  "text": "Brief textual description of the subject matter"
+                }
+              ]
+            },
+            {
+              "category": "PARAMETER",
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Typ des notwendigen Service"
+                },
+                {
+                  "language": "en",
+                  "text": "Type of requested service"
+                }
+              ],
+              "idShort": "ServiceType",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI763#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Detailinformationen zum Servicebedarf"
+                },
+                {
+                  "language": "en",
+                  "text": "Detailed information of service need"
+                }
+              ],
+              "idShort": "DetailedInformation",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI789#001/0173-1#01-AHX445#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Langtext zur Servicebedarfsmeldung"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Long text of Service Request "
+                    }
+                  ],
+                  "idShort": "LongText",
+                  "modelType": "MultiLanguageProperty",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI764#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Beginn der St\u00f6rung"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Start of fault"
+                    }
+                  ],
+                  "idShort": "StartOfFault",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI765#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:dateTime"
+                },
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Fehlercode"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Error code"
+                    }
+                  ],
+                  "idShort": "ErrorCode",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI766#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Angeh\u00e4ngte Dateien"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Attached media"
+                    }
+                  ],
+                  "idShort": "AttachedMedia",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI790#001/0173-1#01-AHX446#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "category": "PARAMETER",
+                      "displayName": [
+                        {
+                          "language": "de",
+                          "text": "Anzahl der Anh\u00e4nge"
+                        },
+                        {
+                          "language": "en",
+                          "text": "Number of Media"
+                        }
+                      ],
+                      "idShort": "NumberOfMedias",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "0173-1#02-ABI767#001"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:integer"
+                    },
+                    {
+                      "displayName": [
+                        {
+                          "language": "de",
+                          "text": "Anhang"
+                        },
+                        {
+                          "language": "en",
+                          "text": "Media"
+                        }
+                      ],
+                      "idShort": "Media",
+                      "modelType": "SubmodelElementCollection",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "type": "Cardinality",
+                          "value": "OneToMany",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "0173-1#02-ABI791#001/0173-1#01-AHX447#001"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": [
+                        {
+                          "contentType": "image/jpeg",
+                          "displayName": [
+                            {
+                              "language": "de",
+                              "text": "Digitale Datei"
+                            },
+                            {
+                              "language": "en",
+                              "text": "Digital File"
+                            }
+                          ],
+                          "idShort": "DigitalFile",
+                          "modelType": "File",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "0173-1#02-ABK126#001"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          }
+                        },
+                        {
+                          "category": "PARAMETER",
+                          "displayName": [
+                            {
+                              "language": "de",
+                              "text": "Anmerkdung zur Datei"
+                            },
+                            {
+                              "language": "en",
+                              "text": "Comment to File"
+                            }
+                          ],
+                          "idShort": "Comment",
+                          "modelType": "MultiLanguageProperty",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "type": "Cardinality",
+                              "value": "ZeroToOne",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "0173-1#02-ABI768#001"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "language": "en",
+                              "text": "Explanations that refer to the attached file and relate to its use or origin"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "displayName": [
+                {
+                  "language": "de",
+                  "text": "Ansprechpartner vor Ort"
+                },
+                {
+                  "language": "en",
+                  "text": "Onsite contact"
+                }
+              ],
+              "idShort": "OnsiteContact",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "type": "Cardinality",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABI793#001/0173-1#01-AHX449#001"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Partnernummer"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Partner number"
+                    }
+                  ],
+                  "idShort": "PartnerNumber",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABI771#001"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Anzahl der Kontakte"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Number of contacts "
+                    }
+                  ],
+                  "idShort": "NumberOfContacts",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO203#004"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:integer"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "The SMC \u201cContactInformation\u201d contains information on how to contact the manufacturer or an authorised service provider, e.g. when a maintenance service is required"
+                    }
+                  ],
+                  "displayName": [
+                    {
+                      "language": "de",
+                      "text": "Kontaktinformationen"
+                    },
+                    {
+                      "language": "en",
+                      "text": "Contact information"
+                    }
+                  ],
+                  "idShort": "ContactInformation",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Cardinality",
+                      "value": "OneToMany",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAQ837#007/0173-1#01-ADR448#007"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
