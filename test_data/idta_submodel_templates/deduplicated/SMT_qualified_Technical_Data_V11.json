@@ -1,0 +1,548 @@
+{
+  "assetAdministrationShells": [
+    {
+      "assetInformation": {
+        "assetKind": "Type",
+        "assetType": "Type",
+        "globalAssetId": "https://admin-shell.io/idta/asset/TechnicalData/1/1"
+      },
+      "id": "https://admin-shell.io/idta/aas/TechnicalData/1/1",
+      "idShort": "TechnicalDataAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/TechnicalData/1/1"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "administration": {
+        "revision": "1",
+        "version": "1"
+      },
+      "description": [
+        {
+          "language": "de",
+          "text": "Submodel f\u00fcr technische Daten eines Assets und zugeh\u00f6rige Konformit\u00e4ten zu Produktklassifikationen"
+        },
+        {
+          "language": "en",
+          "text": "Submodel containing techical data to the asset and associated product classificatons"
+        }
+      ],
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/TechnicalData/1/1",
+      "idShort": "TechnicalData",
+      "kind": "Instance",
+      "modelType": "Submodel",
+      "qualifiers": [
+        {
+          "type": "FormTag",
+          "value": "TEC",
+          "valueType": "xs:string"
+        },
+        {
+          "type": "FormTitle",
+          "value": "Technical data (sheet) model",
+          "valueType": "xs:string"
+        }
+      ],
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "http://admin-shell.io/sandbox/SG2/TechnicalData/Submodel/1/1"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "idShort": "GeneralInformation",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/GeneralInformation/1/1"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "idShort": "ManufacturerName",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ManufacturerName/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "contentType": "image/png",
+              "idShort": "ManufacturerLogo",
+              "modelType": "File",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ManufacturerLogo/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            },
+            {
+              "idShort": "ManufacturerProductDesignation",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ManufacturerProductDesignation/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "ManufacturerPartNumber",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ManufacturerPartNumber/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "ManufacturerOrderCode",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToOne",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ManufacturerOrderCode/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "contentType": "image/png",
+              "idShort": "ProductImage",
+              "modelType": "File",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ProductImage/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              }
+            }
+          ]
+        },
+        {
+          "idShort": "ProductClassifications",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ProductClassifications/1/1"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "idShort": "ProductClassificationItem__00__",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ProductClassificationItem/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "idShort": "ProductClassificationSystem",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ProductClassificationSystem/1/1"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "idShort": "ClassificationSystemVersion",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ClassificationSystemVersion/1/1"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "idShort": "ProductClassId",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ProductClassId/1/1"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "idShort": "TechnicalProperties",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/TechnicalProperties/1/1"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "idShort": "SemanticIdNotAvailable",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "EditIdShort",
+                  "value": "True",
+                  "valueType": "xs:string"
+                },
+                {
+                  "type": "EditDescription",
+                  "value": "True",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/SemanticIdNotAvailable /1/1 "
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "MainSection",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/MainSection/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "idShort": "SemanticIdNotAvailable",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToMany",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "EditIdShort",
+                      "value": "True",
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "type": "EditDescription",
+                      "value": "True",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/SemanticIdNotAvailable /1/1 "
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "idShort": "SubSection",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "type": "Multiplicity",
+                      "value": "ZeroToMany",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/SubSection/1/1"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "idShort": "SemanticIdNotAvailable",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "type": "Multiplicity",
+                          "value": "ZeroToMany",
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "type": "EditIdShort",
+                          "value": "True",
+                          "valueType": "xs:string"
+                        },
+                        {
+                          "type": "EditDescription",
+                          "value": "True",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SemanticIdNotAvailable /1/1 "
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "idShort": "FurtherInformation",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/FurtherInformation/1/1"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "idShort": "TextStatement",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/TextStatement/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:string"
+            },
+            {
+              "idShort": "ValidDate",
+              "modelType": "Property",
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "value": "One",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/sandbox/SG2/TechnicalData/ValidDate/1/1"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "valueType": "xs:date"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

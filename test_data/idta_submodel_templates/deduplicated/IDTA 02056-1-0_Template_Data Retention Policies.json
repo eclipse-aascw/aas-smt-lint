@@ -1,0 +1,1125 @@
+{
+  "assetAdministrationShells": [
+    {
+      "administration": {
+        "revision": "0",
+        "version": "1"
+      },
+      "assetInformation": {
+        "assetKind": "Type",
+        "assetType": "Type",
+        "globalAssetId": "https://admin-shell.io/idta/asset/DataRetentionPolicies/1/0"
+      },
+      "id": "https://admin-shell.io/idta/aas/DataRetentionPolicies/1/0",
+      "idShort": "DataRetentionPoliciesAAS",
+      "modelType": "AssetAdministrationShell",
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/DataRetentionPolicies/1/0"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ]
+    }
+  ],
+  "submodels": [
+    {
+      "administration": {
+        "revision": "0",
+        "version": "1"
+      },
+      "description": [
+        {
+          "language": "en",
+          "text": "Submodel containing data retention policies for data elements in the Asset Administration Shell."
+        }
+      ],
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/DataRetentionPolicies/1/0",
+      "idShort": "DataRetentionPolicies",
+      "kind": "Template",
+      "modelType": "Submodel",
+      "semanticId": {
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "https://admin-shell.io/idta/DataRetentionPolicies/1/0"
+          }
+        ],
+        "type": "ModelReference"
+      },
+      "submodelElements": [
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "Reference to a DataRetentionPolicies Submodel whose policies are extended or changed by the policies defined in this Submodel."
+            }
+          ],
+          "idShort": "InheritedFrom",
+          "modelType": "ReferenceElement",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "type": "SMT/Cardinality",
+              "value": "ZeroToOne",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/DataRetentionPolicies/InheritedFrom/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/DataRetentionPolicies/InheritedFrom/1/0"
+              }
+            ],
+            "referredSemanticId": {
+              "keys": [
+                {
+                  "type": "GlobalReference",
+                  "value": "https://admin-shell.io/idta/DataRetentionPolicies/InheritedFrom/1/0"
+                }
+              ],
+              "type": "ExternalReference"
+            },
+            "type": "ExternalReference"
+          }
+        },
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "Defines the set of policies."
+            }
+          ],
+          "idShort": "Policies",
+          "modelType": "SubmodelElementCollection",
+          "qualifiers": [
+            {
+              "kind": "ConceptQualifier",
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "type": "SMT/Cardinality",
+              "value": "One",
+              "valueType": "xs:string"
+            }
+          ],
+          "semanticId": {
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Policies/1/0"
+              }
+            ],
+            "type": "ExternalReference"
+          },
+          "value": [
+            {
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Describes a single data retention policy."
+                }
+              ],
+              "idShort": "Policy",
+              "modelType": "SubmodelElementCollection",
+              "qualifiers": [
+                {
+                  "kind": "ConceptQualifier",
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "type": "SMT/Cardinality",
+                  "value": "ZeroToMany",
+                  "valueType": "xs:string"
+                },
+                {
+                  "kind": "ConceptQualifier",
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/SubmodelTemplates/AllowedIdShort/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "type": "AllowedIdShort",
+                  "value": "Policy[\\d]{2,3}",
+                  "valueType": "xs:string"
+                }
+              ],
+              "semanticId": {
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/DataRetentionPolicies/Policy/1/0"
+                  }
+                ],
+                "type": "ExternalReference"
+              },
+              "value": [
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Specifies how long an element must be retained before it can be deleted."
+                    }
+                  ],
+                  "idShort": "RetentionTime",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/RetentionTime/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:duration"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "References to semantic identifiers of elements that this policy shall apply to."
+                    }
+                  ],
+                  "idShort": "SemanticIds",
+                  "modelType": "SubmodelElementList",
+                  "orderRelevant": true,
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/SemanticIds/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "semanticIdListElement": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/SemanticId/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "typeValueListElement": "ReferenceElement",
+                  "value": [
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Reference to a semantic identifier of an element that this policy shall apply to."
+                        }
+                      ],
+                      "modelType": "ReferenceElement",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "OneToMany",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SemanticId/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SemanticId/1/0"
+                          }
+                        ],
+                        "referredSemanticId": {
+                          "keys": [
+                            {
+                              "type": "GlobalReference",
+                              "value": "https://admin-shell.io/idta/DataRetentionPolicies/SemanticId/1/0"
+                            }
+                          ],
+                          "type": "ExternalReference"
+                        },
+                        "type": "ExternalReference"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Establishes a relationship with a policy that is being overridden by this policy."
+                    }
+                  ],
+                  "first": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Overrides/1/0"
+                      }
+                    ],
+                    "referredSemanticId": {
+                      "keys": [
+                        {
+                          "type": "GlobalReference",
+                          "value": "https://admin-shell.io/idta/DataRetentionPolicies/Overrides/1/0"
+                        }
+                      ],
+                      "type": "ExternalReference"
+                    },
+                    "type": "ExternalReference"
+                  },
+                  "idShort": "Overrides",
+                  "modelType": "RelationshipElement",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "second": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Overrides/1/0"
+                      }
+                    ],
+                    "referredSemanticId": {
+                      "keys": [
+                        {
+                          "type": "GlobalReference",
+                          "value": "https://admin-shell.io/idta/DataRetentionPolicies/Overrides/1/0"
+                        }
+                      ],
+                      "type": "ExternalReference"
+                    },
+                    "type": "ExternalReference"
+                  },
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Overrides/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  }
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Specifies whether the policy is immutable."
+                    }
+                  ],
+                  "idShort": "Immutable",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Immutable/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:boolean"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Legal name of the entity who created the policy."
+                    }
+                  ],
+                  "idShort": "CreatedBy",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/CreatedBy/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Timestamp of when the policy was created."
+                    }
+                  ],
+                  "idShort": "CreationTime",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/CreationTime/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:dateTime"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Legal name of the entity that issued the policy."
+                    }
+                  ],
+                  "idShort": "Issuer",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Issuer/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:string"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Describes the source of a policy."
+                    }
+                  ],
+                  "idShort": "Source",
+                  "modelType": "SubmodelElementCollection",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Source/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "value": [
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Identifier of the source."
+                        }
+                      ],
+                      "idShort": "Identifier",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "One",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceIdentifier/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:string"
+                    },
+                    {
+                      "contentType": "image/png",
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Reference to an external file representing the policy source."
+                        }
+                      ],
+                      "idShort": "Document",
+                      "modelType": "File",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceDocument/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      }
+                    },
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Link to an external source."
+                        }
+                      ],
+                      "idShort": "Link",
+                      "modelType": "Property",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceLink/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "valueType": "xs:anyURI"
+                    },
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "Reference to a source in the same or an external Asset Administration Shell."
+                        }
+                      ],
+                      "idShort": "Reference",
+                      "modelType": "ReferenceElement",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "ZeroToOne",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceReference/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceReference/1/0"
+                          }
+                        ],
+                        "referredSemanticId": {
+                          "keys": [
+                            {
+                              "type": "GlobalReference",
+                              "value": "https://admin-shell.io/idta/DataRetentionPolicies/SourceReference/1/0"
+                            }
+                          ],
+                          "type": "ExternalReference"
+                        },
+                        "type": "ExternalReference"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Date and time that the policy is valid from."
+                    }
+                  ],
+                  "idShort": "EffectiveFrom",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/EffectiveFrom/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:dateTime"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Date and time until when the policy is valid."
+                    }
+                  ],
+                  "idShort": "EffectiveUntil",
+                  "modelType": "Property",
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "ZeroToOne",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/EffectiveUntil/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "valueType": "xs:dateTime"
+                },
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Activity log of changes to the policy."
+                    }
+                  ],
+                  "idShort": "AuditLog",
+                  "modelType": "SubmodelElementList",
+                  "orderRelevant": true,
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "type": "SMT/Cardinality",
+                      "value": "One",
+                      "valueType": "xs:string"
+                    }
+                  ],
+                  "semanticId": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/AuditLog/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "semanticIdListElement": {
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "https://admin-shell.io/idta/DataRetentionPolicies/Activity/1/0"
+                      }
+                    ],
+                    "type": "ExternalReference"
+                  },
+                  "typeValueListElement": "SubmodelElementCollection",
+                  "value": [
+                    {
+                      "description": [
+                        {
+                          "language": "en",
+                          "text": "An activity related to the policy."
+                        }
+                      ],
+                      "modelType": "SubmodelElementCollection",
+                      "qualifiers": [
+                        {
+                          "kind": "ConceptQualifier",
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "type": "SMT/Cardinality",
+                          "value": "OneToMany",
+                          "valueType": "xs:string"
+                        }
+                      ],
+                      "semanticId": {
+                        "keys": [
+                          {
+                            "type": "GlobalReference",
+                            "value": "https://admin-shell.io/idta/DataRetentionPolicies/Activity/1/0"
+                          }
+                        ],
+                        "type": "ExternalReference"
+                      },
+                      "value": [
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Time when the change was made."
+                            }
+                          ],
+                          "idShort": "Timestamp",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "type": "SMT/Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Timestamp/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:dateTime"
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Username or legal name of the entity that made the change."
+                            }
+                          ],
+                          "idShort": "Identity",
+                          "modelType": "MultiLanguageProperty",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "type": "SMT/Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Identity/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "language": "en",
+                              "text": "Identity"
+                            }
+                          ]
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Description of the action taken."
+                            }
+                          ],
+                          "idShort": "Operation",
+                          "modelType": "MultiLanguageProperty",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "type": "SMT/Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Operation/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "language": "en",
+                              "text": "Operation"
+                            }
+                          ]
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Reason for the change."
+                            }
+                          ],
+                          "idShort": "Reason",
+                          "modelType": "MultiLanguageProperty",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "type": "SMT/Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Reason/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "value": [
+                            {
+                              "language": "en",
+                              "text": "Reason"
+                            }
+                          ]
+                        },
+                        {
+                          "description": [
+                            {
+                              "language": "en",
+                              "text": "Signature of the Policy after the change was made."
+                            }
+                          ],
+                          "idShort": "Signature",
+                          "modelType": "Property",
+                          "qualifiers": [
+                            {
+                              "kind": "ConceptQualifier",
+                              "semanticId": {
+                                "keys": [
+                                  {
+                                    "type": "GlobalReference",
+                                    "value": "https://admin-shell.io/SubmodelTemplates/Cardinality/1/0"
+                                  }
+                                ],
+                                "type": "ExternalReference"
+                              },
+                              "type": "SMT/Cardinality",
+                              "value": "One",
+                              "valueType": "xs:string"
+                            }
+                          ],
+                          "semanticId": {
+                            "keys": [
+                              {
+                                "type": "GlobalReference",
+                                "value": "https://admin-shell.io/idta/DataRetentionPolicies/Signature/1/0"
+                              }
+                            ],
+                            "type": "ExternalReference"
+                          },
+                          "valueType": "xs:string"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

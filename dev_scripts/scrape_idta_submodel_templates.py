@@ -77,7 +77,7 @@ def main() -> int:
     """Execute the main routine."""
     repo_root = pathlib.Path(os.path.realpath(__file__)).parent.parent
     list_path = repo_root / "test_data/idta_submodel_templates/url_list.txt"
-    out_dir = repo_root / "test_data/idta_submodel_templates/templates"
+    out_dir = repo_root / "test_data/idta_submodel_templates/originals"
 
     if not list_path.exists():
         print(f"List file not found: {list_path}", file=sys.stderr)
