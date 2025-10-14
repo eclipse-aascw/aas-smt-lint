@@ -322,17 +322,20 @@ class GlobalIdentifier(Stripped):
 def _try_global_id(
     that: Union[aas_types.Submodel, aas_types.SubmodelElementCollection],
 ) -> Tuple[Optional[GlobalIdentifier], Optional[str]]:
-    if that.semantic_id is None:
-        return None, "The semantic ID is missing."
+    if isinstance(that, aas_types.Submodel):
+        return GlobalIdentifier(that.id.strip()), None
 
-    if (
-        that.semantic_id.type is aas_types.ReferenceTypes.EXTERNAL_REFERENCE
-        and len(that.semantic_id.keys) == 1
-        and that.semantic_id.keys[0].type is aas_types.KeyTypes.GLOBAL_REFERENCE
-    ):
-        return GlobalIdentifier(that.semantic_id.keys[0].value.strip()), None
+    elif isinstance(that, aas_types.SubmodelElementCollection):
+        if that.semantic_id is None:
+            return None, "The semantic ID is missing."
 
-    if isinstance(that, aas_types.SubmodelElementCollection):
+        if (
+            that.semantic_id.type is aas_types.ReferenceTypes.EXTERNAL_REFERENCE
+            and len(that.semantic_id.keys) == 1
+            and that.semantic_id.keys[0].type is aas_types.KeyTypes.GLOBAL_REFERENCE
+        ):
+            return GlobalIdentifier(that.semantic_id.keys[0].value.strip()), None
+
         with_id_short_part = (
             f" with ID-short {that.id_short!r}" if that.id_short is not None else ""
         )
@@ -342,21 +345,6 @@ def _try_global_id(
             f"was expected to be an external reference "
             f"with a single global reference key, "
             f"but it was not: {aas_jsonization.to_jsonable(that.semantic_id)}"
-        )
-
-    elif isinstance(that, aas_types.Submodel):
-        if (
-            that.semantic_id.type is aas_types.ReferenceTypes.MODEL_REFERENCE
-            and len(that.semantic_id.keys) == 1
-            and that.semantic_id.keys[0].type is aas_types.KeyTypes.SUBMODEL
-        ):
-            return GlobalIdentifier(that.semantic_id.keys[0].value.strip()), None
-
-        return None, (
-            "The semantic ID of the submodel was expected to be either an external "
-            "reference with a single global reference key or a model reference with "
-            "a single key to a submodel, but it was neither: "
-            f"{aas_jsonization.to_jsonable(that.semantic_id)}"
         )
 
     else:
