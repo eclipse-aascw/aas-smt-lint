@@ -597,6 +597,55 @@ def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
 # endregion Check whitespace
 
 
+def _verify_category_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check whether referables use category."""
+    for submodel in environment.over_submodels_or_empty():
+        if submodel.category is not None:
+            yield Message(
+                level=Level.WARNING,
+                text='Use of deprecated attribute "Category".',
+                path=Path(fragments=[submodel.id]),
+            )
+
+    for elem, path in _over_elements_of_environment(environment):
+        if not isinstance(elem, aas_types.Referable):
+            continue
+
+        if elem.category is not None:
+            yield Message(
+                level=Level.WARNING,
+                text='Use of deprecated attribute "Category".',
+                path=path,
+            )
+
+
+_DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
+
+
+def _verify_deprecated_cardinality_qualifiers(
+    environment: aas_types.Environment,
+) -> Iterator[Message]:
+    """Check that the submodels don't use deprecated qualifiers."""
+    for qualifiable, path in _over_elements_of_environment(environment):
+        if not isinstance(qualifiable, aas_types.Qualifiable):
+            continue
+
+        for qualifier in qualifiable.over_qualifiers_or_empty():
+            if qualifier.type in _DEPRECATED_CARDINALITY_QUALIFIERS_SET:
+                yield Message(
+                    level=Level.WARNING,
+                    text=f'Use of deprecated qualifier "{qualifier}".',
+                    path=path,
+                )
+
+
+def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check that the submodels don't contain deprecated attributes, types, or qualifiers."""
+    yield from _verify_category_types(environment)
+
+    yield from _verify_deprecated_cardinality_qualifiers(environment)
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
@@ -604,6 +653,8 @@ def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from _verify_references_and_definitions(environment)
 
     yield from _verify_whitespace(environment)
+
+    yield from _verify_deprecated_types(environment)
 
 
 def main(prog: str) -> int:
