@@ -689,6 +689,37 @@ def _verify_qualifier_types(environment: aas_types.Environment) -> Iterator[Mess
                 )
 
 
+def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check for properties marked as arbitrary property types."""
+    for submodel_element, path in _over_elements_of_environment(environment):
+        # NOTE (empwilli 2025-10-29): not all SMTs properly implement arbitrary
+        # types, so we are a little bit lenient for the semantic id check and
+        # check the id short, as well.
+        match submodel_element.semantic_id:
+            case aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value=value,
+                    )
+                ],
+            ) if value.startswith("https://admin-shell.io/SMT/General/Arbitrary"):
+                yield Message(
+                    level=Level.WARNING,
+                    text="Found arbitrary property annotation.",
+                    path=path,
+                )
+            case _ if "arbitrary" in (submodel_element.id_short or "").lower():
+                yield Message(
+                    level=Level.WARNING,
+                    text="Found arbitrary property annotation.",
+                    path=path,
+                )
+            case _:
+                continue
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
@@ -700,6 +731,8 @@ def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from _verify_deprecated_types(environment)
 
     yield from _verify_qualifier_types(environment)
+
+    yield from _verify_arbitrary_types(environment)
 
 
 def main(prog: str) -> int:
