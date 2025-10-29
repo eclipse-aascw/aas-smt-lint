@@ -646,6 +646,49 @@ def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Mes
     yield from _verify_deprecated_cardinality_qualifiers(environment)
 
 
+_TEMPLATE_QUALIFIERS = {
+    "SMT/Cardinality",
+    "SMT/EitherOr",
+    "SMT/InitialValue",
+    "SMT/DefaultValue",
+    "SMT/ExampleValue",
+    "SMT/AllowedRange",
+    "SMT/AllowedIdShort",
+    "SMT/AllowedValue",
+    "SMT/AccessMode",
+    "FormTitle",
+    "FormInfo",
+    "FormUrl",
+    "EditIdShort",
+    "EditDescription",
+    "FormChoices",
+}
+
+
+def _verify_qualifier_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check that qualifiers have the correct type."""
+    qualifiables_with_path = (
+        (qualifiable, path)
+        for qualifiable, path in _over_elements_of_environment(environment)
+        if isinstance(qualifiable, aas_types.Qualifiable)
+    )
+
+    for qualifiable, path in qualifiables_with_path:
+        for qualifier in qualifiable.over_qualifiers_or_empty():
+            if (
+                qualifier.type
+                in _TEMPLATE_QUALIFIERS | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
+            ) and qualifier.kind_or_default() != aas_types.QualifierKind.TEMPLATE_QUALIFIER:
+                yield Message(
+                    level=Level.ERROR,
+                    text=(
+                        f'Wrong qualifier type for qualifier "{qualifier.type}", '
+                        "must be TemplateQualifier."
+                    ),
+                    path=path,
+                )
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
@@ -655,6 +698,8 @@ def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from _verify_whitespace(environment)
 
     yield from _verify_deprecated_types(environment)
+
+    yield from _verify_qualifier_types(environment)
 
 
 def main(prog: str) -> int:
