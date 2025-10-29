@@ -305,7 +305,7 @@ def _over_elements_of_environment(
 ) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
     """Iterate over all the submodel elements contained in the environment."""
     for submodel in environment.over_submodels_or_empty():
-        prefix = Path(fragments=[])
+        prefix = Path(fragments=[submodel.id])
 
         yield from _over_elements_of_container(container=submodel, prefix=prefix)
 
