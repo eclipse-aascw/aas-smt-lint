@@ -263,7 +263,36 @@ _ContainerAsTuple = (
 assert _ContainerAsTuple == get_args(_Container)
 
 
-def _over_elements_of_container(
+def _over_elements_of_container_non_recursive(
+    container: _Container, prefix: Path
+) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
+    if isinstance(container, aas_types.Submodel):
+        for element in container.over_submodel_elements_or_empty():
+            assert (
+                element.id_short is not None
+            ), "All elements of a Submodel must have an ID-short."
+            path = Path(fragments=list(prefix.fragments) + [element.id_short])
+
+            yield element, path
+    elif isinstance(container, aas_types.SubmodelElementList):
+        for i, element in enumerate(container.over_value_or_empty()):
+            path = Path(fragments=list(prefix.fragments) + [i])
+
+            yield element, path
+    elif isinstance(container, aas_types.SubmodelElementCollection):
+        for element in container.over_value_or_empty():
+            assert (
+                element.id_short is not None
+            ), "All elements of a Submodel Element Collection must have an ID-short."
+            path = Path(fragments=list(prefix.fragments) + [element.id_short])
+
+            yield element, path
+    else:
+        # noinspection PyTypeChecker
+        assert_never(container)
+
+
+def _over_elements_of_container_recursively(
     container: _Container, prefix: Path
 ) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
     if isinstance(container, aas_types.Submodel):
@@ -276,7 +305,7 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(container=element, prefix=path)
     elif isinstance(container, aas_types.SubmodelElementList):
         for i, element in enumerate(container.over_value_or_empty()):
             path = Path(fragments=list(prefix.fragments) + [i])
@@ -284,7 +313,7 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(container=element, prefix=path)
     elif isinstance(container, aas_types.SubmodelElementCollection):
         for element in container.over_value_or_empty():
             assert (
@@ -295,7 +324,7 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(container=element, prefix=path)
     else:
         # noinspection PyTypeChecker
         assert_never(container)
@@ -308,7 +337,7 @@ def _over_elements_of_environment(
     for submodel in environment.over_submodels_or_empty():
         prefix = Path(fragments=[])
 
-        yield from _over_elements_of_container(container=submodel, prefix=prefix)
+        yield from _over_elements_of_container_recursively(container=submodel, prefix=prefix)
 
 
 class GlobalIdentifier(Stripped):
@@ -720,6 +749,43 @@ def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Mess
                 continue
 
 
+_CARDINALITY_QUALIFIERS_SET = {"SMT/Cardinality"} | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
+
+
+def _verify_arity_of_non_list_elements(
+    environment: aas_types.Environment,
+) -> Iterator[Message]:
+    """Check for non-list elements that have an arity other than ZeroToOne or OneToMany."""
+    for container_type, path in _over_elements_of_environment(environment):
+        if not isinstance(
+            container_type, (aas_types.Submodel, aas_types.SubmodelElementCollection)
+        ):
+            continue
+
+        for elem, elem_path in _over_elements_of_container_non_recursive(
+            container_type, path
+        ):
+            cardinality_qualifiers = []
+
+            for qualifier in elem.over_qualifiers_or_empty():
+                if qualifier.type in _CARDINALITY_QUALIFIERS_SET:
+                    cardinality_qualifiers.append(qualifier)
+
+            if len(cardinality_qualifiers) == 0:
+                continue
+
+            assert len(cardinality_qualifiers) == 1
+
+            cardinality_qualifier = cardinality_qualifiers[0]
+
+            if cardinality_qualifier.value not in ["ZeroToMany", "OneToMany"]:
+                yield Message(
+                    level=Level.WARNING,
+                    text=f"Found arity of {cardinality_qualifier.value} for non-list element.",
+                    path=elem_path,
+                )
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
@@ -733,6 +799,8 @@ def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from _verify_qualifier_types(environment)
 
     yield from _verify_arbitrary_types(environment)
+
+    yield from _verify_arity_of_non_list_elements(environment)
 
 
 def main(prog: str) -> int:
