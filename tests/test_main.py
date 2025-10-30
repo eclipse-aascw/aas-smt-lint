@@ -1,12 +1,17 @@
 # pylint: disable=missing-docstring
 
 import unittest
+from typing import Iterator
+
+import aas_core3.types as aas_types
 
 # noinspection PyProtectedMember
 from aas_smt_lint.main import (
     _deserialize_environment,
     Path,
     GlobalIdentifier,
+    _WhitespaceChecker,
+    Message,
 )
 
 
@@ -52,6 +57,98 @@ class TestGlobalIdentifier(unittest.TestCase):
     def test_global_identifier_with_whitespace_raises(self) -> None:
         with self.assertRaises(Exception):  # icontract violation
             GlobalIdentifier(" has_whitespace ")
+
+
+def messages_to_string(messages: Iterator[Message]) -> str:
+    """Convert iterator of messages to newline-joined lines with format '{path}: {text}'."""
+    return "\n".join(f"{msg.path}: {msg.text}" for msg in messages)
+
+
+class TestWhitespaceChecker(unittest.TestCase):
+    def test_clean_submodel_no_warnings(self) -> None:
+        submodel = aas_types.Submodel(
+            id="clean_submodel", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        self.assertEqual("", result)
+
+    def test_submodel_with_leading_whitespace_in_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id=" leading_space", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = " leading_space: Surrounding whitespace in id"
+        self.assertEqual(expected, result)
+
+    def test_submodel_with_trailing_whitespace_in_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id="trailing_space ", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "trailing_space : Surrounding whitespace in id"
+        self.assertEqual(expected, result)
+
+    def test_submodel_with_whitespace_in_middle_of_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id="has space inside", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "has space inside: Whitespace in the middle of submodel id"
+        self.assertEqual(expected, result)
+
+    def test_property_with_leading_whitespace_in_value(self) -> None:
+        prop = aas_types.Property(
+            id_short="test_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value=" leading_space",
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "test_submodel.test_prop: Surrounding whitespace in value"
+        self.assertEqual(expected, result)
+
+    def test_property_with_trailing_whitespace_in_value(self) -> None:
+        prop = aas_types.Property(
+            id_short="test_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="trailing_space ",
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "test_submodel.test_prop: Surrounding whitespace in value"
+        self.assertEqual(expected, result)
+
+    def test_multiple_whitespace_issues(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value=" bad_value ",
+        )
+        submodel = aas_types.Submodel(
+            id=" bad_submodel ",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+ bad_submodel : Surrounding whitespace in id
+ bad_submodel .bad_prop: Surrounding whitespace in value"""
+        self.assertEqual(expected, result)
 
 
 if __name__ == "__main__":

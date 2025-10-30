@@ -6,6 +6,7 @@ import glob
 import itertools
 import json
 import pathlib
+import re
 import sys
 from typing import (
     List,
@@ -22,10 +23,10 @@ from typing import (
     Mapping,
 )
 
-from icontract import ensure, require
 import aas_core3.jsonization as aas_jsonization
 import aas_core3.types as aas_types
 import aas_core3.xmlization as aas_xmlization
+from icontract import ensure, require
 from typing_extensions import assert_never
 
 import aas_smt_lint
@@ -416,11 +417,193 @@ def _verify_references_and_definitions(
             assert_never(element)
 
 
+# region Check whitespace
+
+
+def _human_readable_attribute_name(name: str) -> str:
+    return name.replace("_", " ")
+
+
+def _has_surrounding_whitespace(text: str) -> bool:
+    """
+    Check whether the given text contains surrounding whitespace.
+
+    Surrounding whitespace means a leading or a trailing space, tab or newline.
+
+    >>> _has_surrounding_whitespace('no')
+    False
+
+    >>> _has_surrounding_whitespace(' yes')
+    True
+
+    >>> _has_surrounding_whitespace('yes ')
+    True
+
+    >>> _has_surrounding_whitespace(' yes ')
+    True
+    """
+    if len(text) == 0:
+        return False
+
+    first = text[0]
+    last = text[-1]
+
+    return (
+        first == " "
+        or first == "\t"
+        or first == "\n"
+        or last == " "
+        or last == "\t"
+        or last == "\n"
+    )
+
+
+_WHITESPACE_IN_MIDDLE_RE = re.compile(r"^\s*[^\s]+\s+[^\s]+")
+
+
+def _has_whitespace_in_middle(text: str) -> bool:
+    """
+    Check whether the ``text`` contains any whitespace within it.
+
+    >>> _has_whitespace_in_middle('no')
+    False
+
+    >>> _has_whitespace_in_middle(' no ')
+    False
+
+    >>> _has_whitespace_in_middle('\\nno\\n')
+    False
+
+    >>> _has_whitespace_in_middle('space inside')
+    True
+
+    >>> _has_whitespace_in_middle('has space inside')
+    True
+
+    >>> _has_whitespace_in_middle('yes\\nyes')
+    True
+    """
+    return _WHITESPACE_IN_MIDDLE_RE.match(text) is not None
+
+
+def _check_attributes_for_surrounding_whitespace(
+    that: Union[aas_types.Submodel, aas_types.SubmodelElement],
+) -> Iterator[str]:
+    """
+    Check that no string attribute contains surrounding whitespace.
+
+    Yield message texts if there is surrounding whitespace.
+    """
+    for attr_name in dir(that):
+        # NOTE (mristin):
+        # We ignore the private/protected/dunder methods.
+        if attr_name.startswith("_"):
+            continue
+
+        attr_val = getattr(that, attr_name)
+
+        if isinstance(attr_val, str):
+            if _has_surrounding_whitespace(attr_val):
+                yield (
+                    f"Surrounding whitespace in "
+                    f"{_human_readable_attribute_name(attr_name)}"
+                )
+
+
+class _WhitespaceChecker:
+    def __init__(self) -> None:
+        self._path = []  # type: List[Union[int, str]]
+
+    # fmt: off
+    @require(
+        lambda self: len(self._path) > 0,
+        "Expected the path to point to the element before as we can not "
+        "rely on ID-short for list elements."
+    )
+    # fmt: on
+    def _check_submodel_element_recursively(
+        self, that: aas_types.SubmodelElement
+    ) -> Iterator[Message]:
+        for text in _check_attributes_for_surrounding_whitespace(that):
+            yield Message(level=Level.WARNING, text=text, path=Path(self._path[:]))
+
+        if isinstance(that, aas_types.SubmodelElementList):
+            for i, child in enumerate(that.over_value_or_empty()):
+                self._path.append(i)
+                try:
+                    yield from self._check_submodel_element_recursively(child)
+                finally:
+                    self._path.pop()
+
+        elif isinstance(that, aas_types.SubmodelElementCollection):
+            for child in that.over_value_or_empty():
+                # NOTE (mristin):
+                # Though the meta-model requires all elements in a collection
+                # to have ID-short set, we make our code robust to possible template
+                # mistakes in order to avoid confusion for the end user and still
+                # report *something*.
+                self._path.append(child.id_short if child.id_short is not None else "")
+                try:
+                    yield from self._check_submodel_element_recursively(child)
+                finally:
+                    self._path.pop()
+        else:
+            pass
+
+        if isinstance(that, aas_types.Key):
+            if _has_whitespace_in_middle(that.value):
+                yield Message(
+                    level=Level.WARNING,
+                    text="Whitespace in the middle of a key value",
+                    path=Path(self._path[:]),
+                )
+
+    def check_submodel(self, that: aas_types.Submodel) -> Iterator[Message]:
+        """Check the attributes of ``that`` submodel and recurse into its elements."""
+        self._path.append(that.id)
+        try:
+            for text in _check_attributes_for_surrounding_whitespace(that):
+                yield Message(level=Level.WARNING, text=text, path=Path(self._path[:]))
+
+            if _has_whitespace_in_middle(that.id):
+                yield Message(
+                    level=Level.WARNING,
+                    text="Whitespace in the middle of submodel id",
+                    path=Path(self._path[:]),
+                )
+
+            for child in that.over_submodel_elements_or_empty():
+                # NOTE (mristin):
+                # Though the meta-model requires all elements in a submodel
+                # to have ID-short set, we make our code robust to possible template
+                # mistakes in order to avoid confusion for the end user and still
+                # report *something*.
+                self._path.append(child.id_short if child.id_short is not None else "")
+                try:
+                    yield from self._check_submodel_element_recursively(child)
+                finally:
+                    self._path.pop()
+        finally:
+            self._path.pop()
+
+
+def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
+    """Verify no unexpected whitespace in the attributes of submodels."""
+    checker = _WhitespaceChecker()
+    for submodel in environment.over_submodels_or_empty():
+        yield from checker.check_submodel(submodel)
+
+
+# endregion Check whitespace
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
 
     yield from _verify_references_and_definitions(environment)
+
+    yield from _verify_whitespace(environment)
 
 
 def main(prog: str) -> int:
