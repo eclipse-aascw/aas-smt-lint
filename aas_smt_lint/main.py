@@ -763,14 +763,14 @@ def _verify_arity_of_non_list_elements(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
     """Check for non-list elements that have an arity other than ZeroToOne or OneToMany."""
-    for container_type, path in _over_elements_of_environment(environment):
+    for container, path in _over_elements_of_environment(environment):
         if not isinstance(
-            container_type, (aas_types.Submodel, aas_types.SubmodelElementCollection)
+            container, (aas_types.Submodel, aas_types.SubmodelElementCollection)
         ):
             continue
 
         for elem, elem_path in _over_elements_of_container_non_recursive(
-            container_type, path
+            container, path
         ):
             cardinality_qualifiers = []
 
