@@ -23,9 +23,12 @@ from typing import (
     Mapping,
 )
 
-import aas_core3.jsonization as aas_jsonization
-import aas_core3.types as aas_types
-import aas_core3.xmlization as aas_xmlization
+from aas_core3 import (
+    jsonization as aas_jsonization,
+    types as aas_types,
+    xmlization as aas_xmlization,
+    verification as aas_verification,
+)
 import inflect
 from icontract import ensure, require
 from typing_extensions import assert_never
@@ -81,24 +84,50 @@ def _deserialize_environment(
     return environment, None
 
 
+# NOTE (mristin):
+# We split _deserialize_environment and _read_and_deserialize_environment both for
+# easier testing and for keeping the code minimal in the main routine.
+
+
+def _read_and_deserialize_environment(
+    path: pathlib.Path,
+) -> Tuple[Optional[aas_types.Environment], Optional[str]]:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception as exception:
+        return None, f"Failed to read from {path}: {exception}"
+
+    environment, deserialize_error = _deserialize_environment(text)
+    if deserialize_error is not None:
+        return None, f"Failed to de-serialize {path}: {deserialize_error}"
+
+    return environment, None
+
+
+@require(
+    lambda environments, paths: len(environments) == len(paths),
+    "Paths must coincide with environments.",
+)
+# fmt: off
 @ensure(
-    lambda result: (result[0] is not None and result[1] is not None)
-    ^ (result[2] is not None),
+    lambda result:
+    (result[0] is not None and result[1] is not None) ^ (result[2] is not None),
     "Either a result or an error",
 )
+# fmt: on
 @ensure(
     lambda result: not (result[2] is not None) or (len(result[2]) > 0),
     "There must be errors if errors is not None",
 )
-def _read_and_merge_environments(
-    paths: Sequence[pathlib.Path],
+def _merge_environments(
+    environments: Sequence[aas_types.Environment], paths: Sequence[pathlib.Path]
 ) -> Tuple[
     Optional[aas_types.Environment],
     Optional[Mapping[str, pathlib.Path]],
     Optional[List[str]],
 ]:
     """
-    Read the AAS environments from the ``paths`` and merge them into a big environment.
+    Merge the AAS environments from the ``paths`` into one big environment.
 
     Return the merged AAS environment and identifier to path map, or errors if any.
     """
@@ -108,20 +137,8 @@ def _read_and_merge_environments(
 
     errors: List[str] = []
 
-    for path in paths:
-        try:
-            text = path.read_text(encoding="utf-8")
-        except Exception as exception:
-            errors.append(f"Failed to read from {path}: {exception}")
-            continue
-
-        environment, deserialize_error = _deserialize_environment(text)
-        if deserialize_error is not None:
-            errors.append(f"Failed to de-serialize {path}: {deserialize_error}")
-            continue
-
-        assert environment is not None
-
+    assert len(environments) == len(paths)
+    for environment, path in zip(environments, paths):
         has_conflict = False
 
         # noinspection PyTypeChecker
@@ -919,33 +936,77 @@ def main(prog: str) -> int:
         if matched_paths:
             paths.extend([pathlib.Path(p) for p in matched_paths])
 
-    had_error = False
+    had_path_error = False
     for path in paths:
         if not path.exists():
             print(f"Path does not exist: {path}", file=sys.stderr)
-            had_error = True
+            had_path_error = True
         elif not path.is_file():
             print(f"Path does not point to a file: {path}", file=sys.stderr)
-            had_error = True
+            had_path_error = True
 
-    if had_error:
+    if had_path_error:
         return 1
 
-    environment, id_to_path, errors = _read_and_merge_environments(paths=paths)
-    if errors is not None:
+    failed_reading_and_deserializing = False
+    environments = []  # type: List[aas_types.Environment]
+    for path in paths:
+        environment, read_or_deserialize_error = _read_and_deserialize_environment(path)
+
+        if read_or_deserialize_error is not None:
+            failed_reading_and_deserializing = True
+            print(read_or_deserialize_error, file=sys.stderr)
+            continue
+
+        assert environment is not None
+        environments.append(environment)
+
+    if failed_reading_and_deserializing:
+        return 1
+
+    caught_something = False
+
+    assert len(environments) == len(paths)
+    for environment, path in zip(environments, paths):
+        # NOTE (mristin):
+        # We separate the meta-model violations from linting errors as their paths are
+        # incompatible. The meta-model violations consider all the model instances of
+        # an environment (including all the attributes), while our linting only considers
+        # submodels and submodel elements.
+
+        violations_as_bullets = bullet_points(
+            f"{violation.path}: {violation.cause}"
+            for violation in aas_verification.verify(environment)
+        )
+        if len(violations_as_bullets) > 0:
+            # NOTE (mristin):
+            # We use the XML namespace as an identifier of the meta-model. This applies
+            # here both for JSON and XML de-serialization even though JSON
+            # de-serailization does not indicate the namespace in the serialization
+            # format.
+            print(
+                f"""\
+There were one or more violations of the AAS meta-model {aas_xmlization.NAMESPACE} in {path}:
+{violations_as_bullets}""",
+                file=sys.stderr,
+            )
+            caught_something = True
+
+    big_environment, id_to_path, merge_errors = _merge_environments(
+        environments=environments, paths=paths
+    )
+    if merge_errors is not None:
         print(
-            f"Failed to read and merge file(s) into a single environment:\n"
-            f"{bullet_points(errors)}",
+            f"Failed to merge file(s) into a single environment:\n"
+            f"{bullet_points(merge_errors)}",
             file=sys.stderr,
         )
         return 1
 
-    assert environment is not None
+    assert big_environment is not None
     assert id_to_path is not None
 
-    caught_something = False
-
-    for message in _verify(environment):
+    for message in _verify(big_environment):
         identifier = message.path.fragments[0]
         assert isinstance(
             identifier, str
