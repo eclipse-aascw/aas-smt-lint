@@ -109,6 +109,7 @@ def main() -> int:
             "continuous_integration",
             "tests",
             "dev_scripts",
+            "impact_analysis",
         ]
 
         if overwrite:
@@ -137,6 +138,7 @@ def main() -> int:
             "tests",
             "continuous_integration",
             "dev_scripts",
+            "impact_analysis",
         ]
 
         exit_code = call_and_report(
@@ -162,6 +164,7 @@ def main() -> int:
             "tests",
             "continuous_integration",
             "dev_scripts",
+            "impact_analysis",
         ]
 
         exit_code = call_and_report(
