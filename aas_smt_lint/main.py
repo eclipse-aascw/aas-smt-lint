@@ -626,8 +626,18 @@ def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
 # endregion Check whitespace
 
 
-def _verify_category_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Check whether referables use category."""
+_DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
+
+
+def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Verify that the submodel doesn't use features that have been marked as deprecated in the standard.
+
+    The standard has been around for some time now and some of its features are, as of now, considered as
+    deprecated. This looks for the use of deprecated features and reports them as warnings.
+    Currently, we check for:
+    - The use of the Category attribute of Referable
+    - The use of Qualifier types (namely outdated cardinality qualifiers).
+    """
     for submodel in environment.over_submodels_or_empty():
         if submodel.category is not None:
             yield Message(
@@ -647,14 +657,6 @@ def _verify_category_types(environment: aas_types.Environment) -> Iterator[Messa
                 path=path,
             )
 
-
-_DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
-
-
-def _verify_deprecated_cardinality_qualifiers(
-    environment: aas_types.Environment,
-) -> Iterator[Message]:
-    """Check that the submodels don't use deprecated qualifiers."""
     for qualifiable, path in _over_elements_of_environment(environment):
         if not isinstance(qualifiable, aas_types.Qualifiable):
             continue
@@ -666,13 +668,6 @@ def _verify_deprecated_cardinality_qualifiers(
                     text=f'Use of deprecated qualifier "{qualifier}".',
                     path=path,
                 )
-
-
-def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Check that the submodels don't contain deprecated attributes, types, or qualifiers."""
-    yield from _verify_category_types(environment)
-
-    yield from _verify_deprecated_cardinality_qualifiers(environment)
 
 
 _TEMPLATE_QUALIFIERS = {
