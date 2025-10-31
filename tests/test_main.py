@@ -19,26 +19,33 @@ from aas_smt_lint.main import (
 
 class TestDeserializeEnvironment(unittest.TestCase):
     def test_empty_text(self) -> None:
-        result_env, error = _deserialize_environment("")
-        self.assertIsNone(result_env)
+        environment, error = _deserialize_environment("")
+        self.assertIsNone(environment)
         self.assertEqual(error, "No text to be parsed")
 
     def test_whitespace_only(self) -> None:
-        result_env, error = _deserialize_environment("   \n\t  ")
-        self.assertIsNone(result_env)
+        environment, error = _deserialize_environment("   \n\t  ")
+        self.assertIsNone(environment)
         self.assertEqual(error, "No text to be parsed")
 
     def test_invalid_json(self) -> None:
-        result_env, error = _deserialize_environment('{"invalid": json}')
-        self.assertIsNone(result_env)
+        environment, error = _deserialize_environment('{"invalid": json}')
+        self.assertIsNone(environment)
         assert error is not None
         self.assertIn("Failed to parse JSON", error)
 
     def test_unrecognized_format(self) -> None:
-        result_env, error = _deserialize_environment("random text")
-        self.assertIsNone(result_env)
+        environment, error = _deserialize_environment("random text")
+        self.assertIsNone(environment)
         assert error is not None
         self.assertIn("Unrecognized first character", error)
+
+    def test_valid_json_environment(self) -> None:
+        json_text = '{"submodels": []}'
+        environment, error = _deserialize_environment(json_text)
+        self.assertIsNone(error)
+        assert environment is not None
+        self.assertIsInstance(environment, aas_types.Environment)
 
 
 class TestPath(unittest.TestCase):
