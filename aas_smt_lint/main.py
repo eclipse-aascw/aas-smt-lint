@@ -26,6 +26,7 @@ from typing import (
 import aas_core3.jsonization as aas_jsonization
 import aas_core3.types as aas_types
 import aas_core3.xmlization as aas_xmlization
+import inflect
 from icontract import ensure, require
 from typing_extensions import assert_never
 
@@ -790,6 +791,77 @@ def _verify_arity_of_non_list_elements(
                     level=Level.WARNING,
                     text=f"Found arity of {cardinality_qualifier.value} for non-list element.",
                     path=elem_path,
+                )
+
+
+_CAMEL_CASE_PART_RE = re.compile(r"[A-Z]+(?=[A-Z][a-z]|$)|[A-Z]?[a-z]+")
+
+
+def _split_id_short_in_parts(text: str) -> List[str]:
+    """
+    Split on underscores and camel case.
+
+    >>> _split_id_short_in_parts('do_something')
+    ['do', 'something']
+
+    >>> _split_id_short_in_parts('camelCaseURL')
+    ['camel', 'Case', 'URL']
+
+    >>> _split_id_short_in_parts('HTTPRequestParser')
+    ['HTTP', 'Request', 'Parser']
+
+    >>> _split_id_short_in_parts('simpleXMLParser')
+    ['simple', 'XML', 'Parser']
+    """
+    parts = text.split("_")
+
+    result = []  # type: List[str]
+
+    for part in parts:
+        camel_case_parts = _CAMEL_CASE_PART_RE.findall(part)
+        result.extend(camel_case_parts)
+
+    return result
+
+
+def _verify_id_shorts_for_plural_singular(
+    environment: aas_types.Environment,
+) -> Iterator[Message]:
+    """Check that ID shorts of lists are in plural and all the other are singular."""
+    engine = inflect.engine()
+
+    for element, path in _over_elements_of_environment(environment):
+        if element.id_short is None:
+            continue
+
+        human_readable_id_short = " ".join(_split_id_short_in_parts(element.id_short))
+        # noinspection PyTypeChecker
+        singular = engine.singular_noun(human_readable_id_short)
+
+        # NOTE (mristin):
+        # If singular is false, that means that the ID-short is in singular.
+        assert singular is False or isinstance(singular, str)
+
+        if isinstance(element, aas_types.SubmodelElementList):
+            if singular is False:
+                yield Message(
+                    level=Level.WARNING,
+                    text=(
+                        f"Expected the ID-short in plural for aggregations, "
+                        f"but got singular: {element.id_short!r}"
+                    ),
+                    path=path,
+                )
+
+        else:
+            if isinstance(singular, str):
+                yield Message(
+                    level=Level.WARNING,
+                    text=(
+                        f"Expected the ID-short in singular for non-aggregations, "
+                        f"but got plural: {element.id_short!r}"
+                    ),
+                    path=path,
                 )
 
 

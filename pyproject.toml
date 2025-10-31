@@ -27,7 +27,8 @@ authors = [
 
 dependencies = [
     "icontract>=2,<3",
-    "aas-core3.0"
+    "aas-core3.0",
+    "inflect==7.5.0"
 ]
 
 [project.optional-dependencies]
