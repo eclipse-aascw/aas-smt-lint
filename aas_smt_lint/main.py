@@ -305,7 +305,9 @@ def _over_elements_of_container_recursively(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     elif isinstance(container, aas_types.SubmodelElementList):
         for i, element in enumerate(container.over_value_or_empty()):
             path = Path(fragments=list(prefix.fragments) + [i])
@@ -313,7 +315,9 @@ def _over_elements_of_container_recursively(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     elif isinstance(container, aas_types.SubmodelElementCollection):
         for element in container.over_value_or_empty():
             assert (
@@ -324,7 +328,9 @@ def _over_elements_of_container_recursively(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     else:
         # noinspection PyTypeChecker
         assert_never(container)
@@ -337,7 +343,9 @@ def _over_elements_of_environment(
     for submodel in environment.over_submodels_or_empty():
         prefix = Path(fragments=[])
 
-        yield from _over_elements_of_container_recursively(container=submodel, prefix=prefix)
+        yield from _over_elements_of_container_recursively(
+            container=submodel, prefix=prefix
+        )
 
 
 class GlobalIdentifier(Stripped):
@@ -630,10 +638,12 @@ _DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
 
 
 def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Verify that the submodel doesn't use features that have been marked as deprecated in the standard.
+    """Verify that the submodel doesn't use features that have been marked as deprecated in the
+    standard.
 
-    The standard has been around for some time now and some of its features are, as of now, considered as
-    deprecated. This looks for the use of deprecated features and reports them as warnings.
+    The standard has been around for some time now and some of its features are, as of now,
+    considered as deprecated. This looks for the use of deprecated features and reports them as
+    warnings.
     Currently, we check for:
     - The use of the Category attribute of Referable
     - The use of Qualifier types (namely outdated cardinality qualifiers).
@@ -744,7 +754,9 @@ def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Mess
                 continue
 
 
-_CARDINALITY_QUALIFIERS_SET = {"SMT/Cardinality"} | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
+_CARDINALITY_QUALIFIERS_SET = {
+    "SMT/Cardinality"
+} | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
 
 
 def _verify_arity_of_non_list_elements(
