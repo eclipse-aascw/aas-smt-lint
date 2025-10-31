@@ -263,7 +263,36 @@ _ContainerAsTuple = (
 assert _ContainerAsTuple == get_args(_Container)
 
 
-def _over_elements_of_container(
+def _over_elements_of_container_non_recursive(
+    container: _Container, prefix: Path
+) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
+    if isinstance(container, aas_types.Submodel):
+        for element in container.over_submodel_elements_or_empty():
+            assert (
+                element.id_short is not None
+            ), "All elements of a Submodel must have an ID-short."
+            path = Path(fragments=list(prefix.fragments) + [element.id_short])
+
+            yield element, path
+    elif isinstance(container, aas_types.SubmodelElementList):
+        for i, element in enumerate(container.over_value_or_empty()):
+            path = Path(fragments=list(prefix.fragments) + [i])
+
+            yield element, path
+    elif isinstance(container, aas_types.SubmodelElementCollection):
+        for element in container.over_value_or_empty():
+            assert (
+                element.id_short is not None
+            ), "All elements of a Submodel Element Collection must have an ID-short."
+            path = Path(fragments=list(prefix.fragments) + [element.id_short])
+
+            yield element, path
+    else:
+        # noinspection PyTypeChecker
+        assert_never(container)
+
+
+def _over_elements_of_container_recursively(
     container: _Container, prefix: Path
 ) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
     if isinstance(container, aas_types.Submodel):
@@ -276,7 +305,9 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     elif isinstance(container, aas_types.SubmodelElementList):
         for i, element in enumerate(container.over_value_or_empty()):
             path = Path(fragments=list(prefix.fragments) + [i])
@@ -284,7 +315,9 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     elif isinstance(container, aas_types.SubmodelElementCollection):
         for element in container.over_value_or_empty():
             assert (
@@ -295,7 +328,9 @@ def _over_elements_of_container(
             yield element, path
 
             if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container(container=element, prefix=path)
+                yield from _over_elements_of_container_recursively(
+                    container=element, prefix=path
+                )
     else:
         # noinspection PyTypeChecker
         assert_never(container)
@@ -308,7 +343,9 @@ def _over_elements_of_environment(
     for submodel in environment.over_submodels_or_empty():
         prefix = Path(fragments=[submodel.id])
 
-        yield from _over_elements_of_container(container=submodel, prefix=prefix)
+        yield from _over_elements_of_container_recursively(
+            container=submodel, prefix=prefix
+        )
 
 
 class GlobalIdentifier(Stripped):
@@ -597,6 +634,165 @@ def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
 # endregion Check whitespace
 
 
+_DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
+
+
+def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Verify that the submodel doesn't use features that have been marked as deprecated in the
+    standard.
+
+    The standard has been around for some time now and some of its features are, as of now,
+    considered as deprecated. This looks for the use of deprecated features and reports them as
+    warnings.
+    Currently, we check for:
+    - The use of the Category attribute of Referable
+    - The use of Qualifier types (namely outdated cardinality qualifiers).
+    """
+    for submodel in environment.over_submodels_or_empty():
+        if submodel.category is not None:
+            yield Message(
+                level=Level.WARNING,
+                text='Use of deprecated attribute "Category".',
+                path=Path(fragments=[submodel.id]),
+            )
+
+    for elem, path in _over_elements_of_environment(environment):
+        if not isinstance(elem, aas_types.Referable):
+            continue
+
+        if elem.category is not None:
+            yield Message(
+                level=Level.WARNING,
+                text='Use of deprecated attribute "Category".',
+                path=path,
+            )
+
+    for qualifiable, path in _over_elements_of_environment(environment):
+        if not isinstance(qualifiable, aas_types.Qualifiable):
+            continue
+
+        for qualifier in qualifiable.over_qualifiers_or_empty():
+            if qualifier.type in _DEPRECATED_CARDINALITY_QUALIFIERS_SET:
+                yield Message(
+                    level=Level.WARNING,
+                    text=f'Use of deprecated qualifier "{qualifier}".',
+                    path=path,
+                )
+
+
+_TEMPLATE_QUALIFIERS = {
+    "SMT/Cardinality",
+    "SMT/EitherOr",
+    "SMT/InitialValue",
+    "SMT/DefaultValue",
+    "SMT/ExampleValue",
+    "SMT/AllowedRange",
+    "SMT/AllowedIdShort",
+    "SMT/AllowedValue",
+    "SMT/AccessMode",
+    "FormTitle",
+    "FormInfo",
+    "FormUrl",
+    "EditIdShort",
+    "EditDescription",
+    "FormChoices",
+}
+
+
+def _verify_qualifier_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check that qualifiers have the correct type."""
+    qualifiables_with_path = (
+        (qualifiable, path)
+        for qualifiable, path in _over_elements_of_environment(environment)
+        if isinstance(qualifiable, aas_types.Qualifiable)
+    )
+
+    for qualifiable, path in qualifiables_with_path:
+        for qualifier in qualifiable.over_qualifiers_or_empty():
+            if (
+                qualifier.type
+                in _TEMPLATE_QUALIFIERS | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
+            ) and qualifier.kind_or_default() != aas_types.QualifierKind.TEMPLATE_QUALIFIER:
+                yield Message(
+                    level=Level.ERROR,
+                    text=(
+                        f'Wrong qualifier type for qualifier "{qualifier.type}", '
+                        "must be TemplateQualifier."
+                    ),
+                    path=path,
+                )
+
+
+def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check for properties marked as arbitrary property types."""
+    for submodel_element, path in _over_elements_of_environment(environment):
+        # NOTE (empwilli 2025-10-29): not all SMTs properly implement arbitrary
+        # types, so we are a little bit lenient for the semantic id check and
+        # check the id short, as well.
+        match submodel_element.semantic_id:
+            case aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value=value,
+                    )
+                ],
+            ) if value.startswith("https://admin-shell.io/SMT/General/Arbitrary"):
+                yield Message(
+                    level=Level.WARNING,
+                    text="Found arbitrary property annotation.",
+                    path=path,
+                )
+            case _ if "arbitrary" in (submodel_element.id_short or "").lower():
+                yield Message(
+                    level=Level.WARNING,
+                    text="Found arbitrary property annotation.",
+                    path=path,
+                )
+            case _:
+                continue
+
+
+_CARDINALITY_QUALIFIERS_SET = {
+    "SMT/Cardinality"
+} | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
+
+
+def _verify_arity_of_non_list_elements(
+    environment: aas_types.Environment,
+) -> Iterator[Message]:
+    """Check for non-list elements that have an arity other than ZeroToOne or OneToMany."""
+    for container_type, path in _over_elements_of_environment(environment):
+        if not isinstance(
+            container_type, (aas_types.Submodel, aas_types.SubmodelElementCollection)
+        ):
+            continue
+
+        for elem, elem_path in _over_elements_of_container_non_recursive(
+            container_type, path
+        ):
+            cardinality_qualifiers = []
+
+            for qualifier in elem.over_qualifiers_or_empty():
+                if qualifier.type in _CARDINALITY_QUALIFIERS_SET:
+                    cardinality_qualifiers.append(qualifier)
+
+            if len(cardinality_qualifiers) == 0:
+                continue
+
+            assert len(cardinality_qualifiers) == 1
+
+            cardinality_qualifier = cardinality_qualifiers[0]
+
+            if cardinality_qualifier.value not in ["ZeroToMany", "OneToMany"]:
+                yield Message(
+                    level=Level.WARNING,
+                    text=f"Found arity of {cardinality_qualifier.value} for non-list element.",
+                    path=elem_path,
+                )
+
+
 def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from _verify_all_submodels_are_templates(environment)
@@ -604,6 +800,14 @@ def _verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from _verify_references_and_definitions(environment)
 
     yield from _verify_whitespace(environment)
+
+    yield from _verify_deprecated_types(environment)
+
+    yield from _verify_qualifier_types(environment)
+
+    yield from _verify_arbitrary_types(environment)
+
+    yield from _verify_arity_of_non_list_elements(environment)
 
 
 def main(prog: str) -> int:
