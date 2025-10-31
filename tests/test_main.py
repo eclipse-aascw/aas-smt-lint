@@ -12,6 +12,8 @@ from aas_smt_lint.main import (
     GlobalIdentifier,
     _WhitespaceChecker,
     Message,
+    _verify_id_shorts_for_plural_singular,
+    Level,
 )
 
 
@@ -149,6 +151,101 @@ class TestWhitespaceChecker(unittest.TestCase):
  bad_submodel : Surrounding whitespace in id
  bad_submodel .bad_prop: Surrounding whitespace in value"""
         self.assertEqual(expected, result)
+
+
+class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
+    def test_submodel_element_list_with_singular_id_short(self) -> None:
+        submodel_list = aas_types.SubmodelElementList(
+            id_short="item",
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[submodel_list],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in plural for aggregations, "
+            "but got singular: 'item'",
+        )
+
+    def test_property_with_plural_id_short(self) -> None:
+        prop = aas_types.Property(
+            id_short="items",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in singular for non-aggregations, "
+            "but got plural: 'items'",
+        )
+
+    def test_submodel_element_list_with_plural_id_short_no_error(self) -> None:
+        submodel_list = aas_types.SubmodelElementList(
+            id_short="items",
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[submodel_list],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_property_with_singular_id_short_no_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="item",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_camel_case_with_underscore_plural_for_property(self) -> None:
+        prop = aas_types.Property(
+            id_short="dataItems",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in singular for non-aggregations, "
+            "but got plural: 'dataItems'",
+        )
 
 
 if __name__ == "__main__":
