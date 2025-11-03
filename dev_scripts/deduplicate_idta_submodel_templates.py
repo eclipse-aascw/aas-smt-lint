@@ -9,7 +9,7 @@ import json
 import os.path
 import pathlib
 import sys
-from typing import Set
+from typing import Set, List
 
 import aas_core3.jsonization as aas_jsonization
 import aas_core3.types as aas_types
@@ -23,14 +23,11 @@ def main() -> int:
 
     paths = sorted(originals_dir.glob("**/*.json"))
 
-    # NOTE (mristin):
-    # We move all the concept descriptions to a separate file. If there are duplicates,
-    # we simply pick the first.
-    observed_concept_description_ids: Set[str] = set()
-
     environment_with_concept_descriptions = aas_types.Environment()
 
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    original_environments = []  # type: List[aas_types.Environment]
 
     for path in paths:
         try:
@@ -40,7 +37,43 @@ def main() -> int:
             print(f"Failed to parse {path}: {exception}", file=sys.stderr)
             return 1
 
+        original_environments.append(environment)
+
+    # NOTE (mristin):
+    # We track IDs of the submodels. If there is a concept description conflicting
+    # with a submodel, we keep the submodel and discard the concept description.
+    observed_submodel_ids: Set[str] = {
+        submodel.id
+        for environment in original_environments
+        for submodel in environment.over_submodels_or_empty()
+    }
+
+    # NOTE (mristin):
+    # We do the same trick with the Asset Administration Shells -- they always trump
+    # concept descriptions on identifiers.
+    observed_asset_administration_shell_ids: Set[str] = {
+        aas.id
+        for environment in original_environments
+        for aas in environment.over_asset_administration_shells_or_empty()
+    }
+
+    # NOTE (mristin):
+    # We move all the concept descriptions to a separate file. If there are duplicates,
+    # we simply pick the first.
+    observed_concept_description_ids: Set[str] = set()
+
+    assert len(original_environments) == len(
+        paths
+    ), "Paths must coincide with original environments."
+
+    for environment, path in zip(original_environments, paths):
         for concept_description in environment.over_concept_descriptions_or_empty():
+            if concept_description.id in observed_submodel_ids:
+                continue
+
+            if concept_description.id in observed_asset_administration_shell_ids:
+                continue
+
             if concept_description.id in observed_concept_description_ids:
                 continue
 
