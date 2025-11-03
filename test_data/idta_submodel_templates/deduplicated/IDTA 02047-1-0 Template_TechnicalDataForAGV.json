@@ -69,7 +69,7 @@
         "keys": [
           {
             "type": "Submodel",
-            "value": "https://admin-shell.io/idta/SubmodelTemplate/technicaldataagv/1/0"
+            "value": "https://admin-shell.io/idta/SubmodelTemplate/technicaldataagv/1/0/CD"
           }
         ],
         "type": "ModelReference"

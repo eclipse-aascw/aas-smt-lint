@@ -18,7 +18,7 @@
           "keys": [
             {
               "type": "Submodel",
-              "value": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0"
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0/CD"
             }
           ],
           "type": "ModelReference"
@@ -46,7 +46,7 @@
         "keys": [
           {
             "type": "Submodel",
-            "value": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0"
+            "value": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0/CD"
           }
         ],
         "type": "ModelReference"

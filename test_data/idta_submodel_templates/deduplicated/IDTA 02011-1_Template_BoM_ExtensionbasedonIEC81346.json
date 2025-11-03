@@ -863,7 +863,7 @@
           "keys": [
             {
               "type": "GlobalReference",
-              "value": "https://admin-shell.io/idta/SubmodelTemplate/HierarchicalStructures/ExtensionIEC81346/1/0"
+              "value": "https://admin-shell.io/idta/SubmodelTemplate/HierarchicalStructures/ExtensionIEC81346/1/0/CD"
             }
           ],
           "type": "ExternalReference"

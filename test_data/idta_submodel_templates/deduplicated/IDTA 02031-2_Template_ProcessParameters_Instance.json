@@ -14,7 +14,7 @@
         },
         "globalAssetId": "https://admin-shell-io/idta/asset/ProcessParameters/1/0"
       },
-      "id": "https://admin-shell-io/idta/aas/ProcessParameters/1/0",
+      "id": "https://admin-shell-io/idta/aas/ProcessParameters/1/0/Instance",
       "idShort": "ProcessParametersInstanceAAS",
       "modelType": "AssetAdministrationShell",
       "submodels": [
@@ -51,7 +51,7 @@
         "keys": [
           {
             "type": "GlobalReference",
-            "value": "https://admin-shell.io/idta/ExecutedProcesses/1/0"
+            "value": "https://admin-shell.io/idta/ExecutedProcesses/1/0/Instance/CD"
           }
         ],
         "type": "ExternalReference"
