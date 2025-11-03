@@ -89,9 +89,14 @@ def _deserialize_environment(
 # easier testing and for keeping the code minimal in the main routine.
 
 
-def _read_and_deserialize_environment(
+def read_and_deserialize_environment(
     path: pathlib.Path,
 ) -> Tuple[Optional[aas_types.Environment], Optional[str]]:
+    """
+    Read the AAS environment from the given path and de-serialize it from JSON or XML.
+
+    The de-serialization format is based on the first non-whitespace character.
+    """
     try:
         text = path.read_text(encoding="utf-8")
     except Exception as exception:
@@ -119,7 +124,7 @@ def _read_and_deserialize_environment(
     lambda result: not (result[2] is not None) or (len(result[2]) > 0),
     "There must be errors if errors is not None",
 )
-def _merge_environments(
+def merge_environments(
     environments: Sequence[aas_types.Environment], paths: Sequence[pathlib.Path]
 ) -> Tuple[
     Optional[aas_types.Environment],
@@ -253,7 +258,7 @@ class Message:
         self.path = path
 
 
-def _verify_all_submodels_are_templates(
+def verify_all_submodels_are_templates(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
     """Check that all submodels are of kind template."""
@@ -408,7 +413,7 @@ def _try_global_id(
         assert_never(that)
 
 
-def _verify_references_and_definitions(
+def verify_redefinitions(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
     """
@@ -431,6 +436,11 @@ def _verify_references_and_definitions(
             continue
 
         assert global_id is not None
+
+        # NOTE (mristin):
+        # We ignore the elements with arbitrary structures.
+        if global_id == "https://admin-shell.io/SMT/General/Arbitrary":
+            continue
 
         path_to_conflict = global_id_to_path.get(global_id, None)
 
@@ -642,7 +652,7 @@ class _WhitespaceChecker:
             self._path.pop()
 
 
-def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
+def verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
     """Verify no unexpected whitespace in the attributes of submodels."""
     checker = _WhitespaceChecker()
     for submodel in environment.over_submodels_or_empty():
@@ -655,13 +665,14 @@ def _verify_whitespace(environment: aas_types.Environment) -> Iterator[Message]:
 _DEPRECATED_CARDINALITY_QUALIFIERS_SET = {"Multiplicity", "Cardinality"}
 
 
-def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Verify that the submodel doesn't use features that have been marked as deprecated in the
-    standard.
+def verify_deprecated(environment: aas_types.Environment) -> Iterator[Message]:
+    """
+    Verify that no deprecated features are used.
 
-    The standard has been around for some time now and some of its features are, as of now,
-    considered as deprecated. This looks for the use of deprecated features and reports them as
-    warnings.
+    The standard has been around for some time now and some of its features are,
+    as of now, considered as deprecated. This looks for the use of deprecated features
+    and reports them as warnings.
+
     Currently, we check for:
     - The use of the Category attribute of Referable
     - The use of Qualifier types (namely outdated cardinality qualifiers).
@@ -693,7 +704,7 @@ def _verify_deprecated_types(environment: aas_types.Environment) -> Iterator[Mes
             if qualifier.type in _DEPRECATED_CARDINALITY_QUALIFIERS_SET:
                 yield Message(
                     level=Level.WARNING,
-                    text=f'Use of deprecated qualifier "{qualifier}".',
+                    text=f'Use of deprecated qualifier "{qualifier.type}".',
                     path=path,
                 )
 
@@ -717,8 +728,8 @@ _TEMPLATE_QUALIFIERS = {
 }
 
 
-def _verify_qualifier_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Check that qualifiers have the correct type."""
+def verify_qualifier_kinds(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check that qualifiers have the correct kind set."""
     qualifiables_with_path = (
         (qualifiable, path)
         for qualifiable, path in _over_elements_of_environment(environment)
@@ -730,23 +741,33 @@ def _verify_qualifier_types(environment: aas_types.Environment) -> Iterator[Mess
             if (
                 qualifier.type
                 in _TEMPLATE_QUALIFIERS | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
-            ) and qualifier.kind_or_default() != aas_types.QualifierKind.TEMPLATE_QUALIFIER:
+            ) and (
+                qualifier.kind_or_default()
+                is not aas_types.QualifierKind.TEMPLATE_QUALIFIER
+            ):
                 yield Message(
                     level=Level.ERROR,
                     text=(
-                        f'Wrong qualifier type for qualifier "{qualifier.type}", '
-                        "must be TemplateQualifier."
+                        f"Wrong qualifier kind for qualifier {qualifier.type!r}, "
+                        f"got {qualifier.kind_or_default().value!r}, "
+                        f"but expected "
+                        f"{aas_types.QualifierKind.TEMPLATE_QUALIFIER.value!r}."
                     ),
                     path=path,
                 )
 
 
-def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Message]:
-    """Check for properties marked as arbitrary property types."""
+_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT: Final[str] = (
+    "Found annotation of an arbitrary element."
+)
+
+
+def verify_arbitraries(environment: aas_types.Environment) -> Iterator[Message]:
+    """Warn for elements marked as arbitrary."""
     for submodel_element, path in _over_elements_of_environment(environment):
-        # NOTE (empwilli 2025-10-29): not all SMTs properly implement arbitrary
-        # types, so we are a little bit lenient for the semantic id check and
-        # check the id short, as well.
+        # NOTE (empwilli 2025-10-29):
+        # Not all SMTs properly implement arbitrary annotations, so we are a little bit
+        # lenient for the semantic ID check and check the ID-short, as well.
         match submodel_element.semantic_id:
             case aas_types.Reference(
                 type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
@@ -759,13 +780,13 @@ def _verify_arbitrary_types(environment: aas_types.Environment) -> Iterator[Mess
             ) if value.startswith("https://admin-shell.io/SMT/General/Arbitrary"):
                 yield Message(
                     level=Level.WARNING,
-                    text="Found arbitrary property annotation.",
+                    text=_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT,
                     path=path,
                 )
             case _ if "arbitrary" in (submodel_element.id_short or "").lower():
                 yield Message(
                     level=Level.WARNING,
-                    text="Found arbitrary property annotation.",
+                    text=_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT,
                     path=path,
                 )
             case _:
@@ -777,10 +798,10 @@ _CARDINALITY_QUALIFIERS_SET = {
 } | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
 
 
-def _verify_arity_of_non_list_elements(
+def verify_arity_of_non_list_elements(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
-    """Check for non-list elements that have an arity other than ZeroToOne or OneToMany."""
+    """Check for non-list elements with arity not ZeroToOne or OneToMany."""
     for container, path in _over_elements_of_environment(environment):
         if not isinstance(
             container, (aas_types.Submodel, aas_types.SubmodelElementCollection)
@@ -806,12 +827,15 @@ def _verify_arity_of_non_list_elements(
             if cardinality_qualifier.value not in ["ZeroToMany", "OneToMany"]:
                 yield Message(
                     level=Level.WARNING,
-                    text=f"Found arity of {cardinality_qualifier.value} for non-list element.",
+                    text=(
+                        f"Found arity of {cardinality_qualifier.value} "
+                        f"for non-list element."
+                    ),
                     path=elem_path,
                 )
 
 
-_CAMEL_CASE_PART_RE = re.compile(r"[A-Z]+(?=[A-Z][a-z]|$)|[A-Z]?[a-z]+")
+_CAMEL_CASE_PART_RE = re.compile(r"[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+")
 
 
 def _split_id_short_in_parts(text: str) -> List[str]:
@@ -829,6 +853,12 @@ def _split_id_short_in_parts(text: str) -> List[str]:
 
     >>> _split_id_short_in_parts('simpleXMLParser')
     ['simple', 'XML', 'Parser']
+
+    >>> _split_id_short_in_parts('B10')
+    ['B', '10']
+
+    >>> _split_id_short_in_parts('XML2Text')
+    ['XML', '2', 'Text']
     """
     parts = text.split("_")
 
@@ -841,7 +871,47 @@ def _split_id_short_in_parts(text: str) -> List[str]:
     return result
 
 
-def _verify_id_shorts_for_plural_singular(
+@require(lambda text: len(text.strip()) > 0, "The text must not be empty")
+def _is_singular(text: str, engine: inflect.engine) -> bool:
+    """
+    Check whether the ``text`` is a noun in plural.
+
+    >>> engine_for_doctest = inflect.engine()
+    >>> _is_singular('contact information', engine_for_doctest)
+    True
+
+    >>> _is_singular('keys', engine_for_doctest)
+    False
+
+    >>> _is_singular('Endpoint Metadata', engine_for_doctest)
+    True
+
+    >>> _is_singular('Address', engine_for_doctest)
+    True
+
+    >>> _is_singular('Address of contact', engine_for_doctest)
+    True
+    """
+    # NOTE (mristin):
+    # We have to handle special cases here that ``inflect`` library does not.
+    parts = text.split(" ")
+    if len(parts) >= 1:
+        if (
+            parts[-1].lower() in ("data", "meta-data", "metadata")
+            or parts[0].lower() == "address"
+        ):
+            return True
+
+    # NOTE (mristin):
+    # The ``singular`` here refers to the singular form. If singular is False, that
+    # means that the ``text`` is already in singular form.
+    # noinspection PyTypeChecker
+    singular_form = engine.singular_noun(text)
+
+    return singular_form is False or singular_form == text
+
+
+def verify_id_shorts_for_plural_singular(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
     """Check that ID shorts of lists are in plural and all the other are singular."""
@@ -851,16 +921,22 @@ def _verify_id_shorts_for_plural_singular(
         if element.id_short is None:
             continue
 
+        if len(element.id_short.strip()) == 0:
+            yield Message(
+                level=Level.ERROR,
+                text=(
+                    f"ID-short must either be set to a non-empty string or omitted, "
+                    f"but we got an empty string: {element.id_short!r}"
+                ),
+                path=path,
+            )
+            continue
+
         human_readable_id_short = " ".join(_split_id_short_in_parts(element.id_short))
-        # noinspection PyTypeChecker
-        singular = engine.singular_noun(human_readable_id_short)
 
-        # NOTE (mristin):
-        # If singular is false, that means that the ID-short is in singular.
-        assert singular is False or isinstance(singular, str)
-
+        is_singular = _is_singular(human_readable_id_short, engine)
         if isinstance(element, aas_types.SubmodelElementList):
-            if singular is False:
+            if is_singular:
                 yield Message(
                     level=Level.WARNING,
                     text=(
@@ -871,32 +947,35 @@ def _verify_id_shorts_for_plural_singular(
                 )
 
         else:
-            if isinstance(singular, str):
+            if not is_singular:
                 yield Message(
                     level=Level.WARNING,
                     text=(
                         f"Expected the ID-short in singular for non-aggregations, "
-                        f"but got plural: {element.id_short!r}"
+                        f"but got plural for {element.__class__.__name__}: "
+                        f"{element.id_short!r}"
                     ),
                     path=path,
                 )
 
 
-def _verify(environment: aas_types.Environment) -> Iterator[Message]:
+def verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
-    yield from _verify_all_submodels_are_templates(environment)
+    yield from verify_all_submodels_are_templates(environment)
 
-    yield from _verify_references_and_definitions(environment)
+    yield from verify_redefinitions(environment)
 
-    yield from _verify_whitespace(environment)
+    yield from verify_whitespace(environment)
 
-    yield from _verify_deprecated_types(environment)
+    yield from verify_deprecated(environment)
 
-    yield from _verify_qualifier_types(environment)
+    yield from verify_qualifier_kinds(environment)
 
-    yield from _verify_arbitrary_types(environment)
+    yield from verify_arbitraries(environment)
 
-    yield from _verify_arity_of_non_list_elements(environment)
+    yield from verify_arity_of_non_list_elements(environment)
+
+    yield from verify_id_shorts_for_plural_singular(environment)
 
 
 def main(prog: str) -> int:
@@ -951,7 +1030,7 @@ def main(prog: str) -> int:
     failed_reading_and_deserializing = False
     environments = []  # type: List[aas_types.Environment]
     for path in paths:
-        environment, read_or_deserialize_error = _read_and_deserialize_environment(path)
+        environment, read_or_deserialize_error = read_and_deserialize_environment(path)
 
         if read_or_deserialize_error is not None:
             failed_reading_and_deserializing = True
@@ -992,7 +1071,7 @@ There were one or more violations of the AAS meta-model {aas_xmlization.NAMESPAC
             )
             caught_something = True
 
-    big_environment, id_to_path, merge_errors = _merge_environments(
+    big_environment, id_to_path, merge_errors = merge_environments(
         environments=environments, paths=paths
     )
     if merge_errors is not None:
@@ -1006,7 +1085,7 @@ There were one or more violations of the AAS meta-model {aas_xmlization.NAMESPAC
     assert big_environment is not None
     assert id_to_path is not None
 
-    for message in _verify(big_environment):
+    for message in verify(big_environment):
         identifier = message.path.fragments[0]
         assert isinstance(
             identifier, str

@@ -12,7 +12,7 @@ from aas_smt_lint.main import (
     GlobalIdentifier,
     _WhitespaceChecker,
     Message,
-    _verify_id_shorts_for_plural_singular,
+    verify_id_shorts_for_plural_singular,
     Level,
 )
 
@@ -173,7 +173,7 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        messages = list(verify_id_shorts_for_plural_singular(environment))
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].level, Level.WARNING)
         self.assertEqual(
@@ -194,13 +194,13 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        messages = list(verify_id_shorts_for_plural_singular(environment))
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].level, Level.WARNING)
         self.assertEqual(
             messages[0].text,
             "Expected the ID-short in singular for non-aggregations, "
-            "but got plural: 'items'",
+            "but got plural for Property: 'items'",
         )
 
     def test_submodel_element_list_with_plural_id_short_no_error(self) -> None:
@@ -215,7 +215,7 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        messages = list(verify_id_shorts_for_plural_singular(environment))
         self.assertEqual(len(messages), 0)
 
     def test_property_with_singular_id_short_no_error(self) -> None:
@@ -230,7 +230,7 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        messages = list(verify_id_shorts_for_plural_singular(environment))
         self.assertEqual(len(messages), 0)
 
     def test_camel_case_with_underscore_plural_for_property(self) -> None:
@@ -245,13 +245,13 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(_verify_id_shorts_for_plural_singular(environment))
+        messages = list(verify_id_shorts_for_plural_singular(environment))
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].level, Level.WARNING)
         self.assertEqual(
             messages[0].text,
             "Expected the ID-short in singular for non-aggregations, "
-            "but got plural: 'dataItems'",
+            "but got plural for Property: 'dataItems'",
         )
 
 
