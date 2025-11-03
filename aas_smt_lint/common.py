@@ -77,3 +77,11 @@ class Stripped(Rstripped):
     @require(lambda block: is_stripped(block))
     def __new__(cls, block: str) -> "Stripped":
         return cast(Stripped, block)
+
+
+class NonNegativeInt(int):
+    """Represent a non-negative integer, *i.e.*, ``>= 0``."""
+
+    @require(lambda value: value >= 0)
+    def __new__(cls, value: int) -> "NonNegativeInt":
+        return cast(NonNegativeInt, value)

@@ -40,6 +40,10 @@ dev = [
     "types-requests==2.32.4.20250913"
 ]
 
+impact_analysis = [
+    "fsdag==1.0.1"
+]
+
 [project.scripts]
 aas-smt-lint = "aas_smt_lint.main:entry_point"
 
@@ -48,7 +52,7 @@ repository = "https://github.com/mristin/aas-smt-lint"
 
 [tool.setuptools.packages.find]
 include = ["aas_smt_lint"]
-exclude = ["continuous_integration", "tests"]
+exclude = ["continuous_integration", "tests", "impact_analysis", "dev_scripts"]
 
 # Development tooling
 [tool]

@@ -54,6 +54,20 @@ made to the repository are automatically reflected in the virtual environment
 .. _pip-editable: https://pip.pypa.io/en/stable/reference/pip_install/#install-editable
 .. _pip-editable-stackoverflow: https://stackoverflow.com/questions/35064426/when-would-the-e-editable-option-be-useful-with-pip-install
 
+Impact Analysis
+===============
+To run the impact analysis on the official IDTA submodel templates, install the analysis dependencies first:
+
+.. code-block::
+
+    pip3 install --editable .[impact_analysis]
+
+Then you can run it:
+
+.. code-block::
+
+    python impact_analysis/runme.py
+
 Coding Style Guide
 ==================
 Typing
