@@ -22626,7 +22626,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/HierarchicalStructures/ExtensionIEC81346/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/HierarchicalStructures/ExtensionIEC81346/1/0/CD",
       "idShort": "IEC81346Structure",
       "modelType": "ConceptDescription"
     },
@@ -39725,7 +39725,7 @@
           }
         }
       ],
-      "id": "https://admin-shell-io/idta/SubmodelTemplate/ProcessParameters/1/0",
+      "id": "https://admin-shell-io/idta/SubmodelTemplate/ProcessParameters/1/0/CD",
       "idShort": "ProcessParameters",
       "modelType": "ConceptDescription"
     },
@@ -40220,7 +40220,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/ExecutedProcesses/1/0",
+      "id": "https://admin-shell.io/idta/ExecutedProcesses/1/0/Instance/CD",
       "idShort": "ExecutedProcesses",
       "modelType": "ConceptDescription"
     },
@@ -44788,7 +44788,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/euromap/Moulds/Identification/1/0",
+      "id": "https://admin-shell.io/idta/euromap/Moulds/Identification/1/0/CD",
       "idShort": "PlasticsAndRubberMouldsIdentification",
       "modelType": "ConceptDescription"
     },
@@ -47825,7 +47825,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/technicaldataagv/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/technicaldataagv/1/0/CD",
       "idShort": "TechnicalDataAGV",
       "modelType": "ConceptDescription"
     },
@@ -57243,7 +57243,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/AIDeployment/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/AIDeployment/1/0/CD",
       "idShort": "AIDeployment",
       "modelType": "ConceptDescription"
     },
@@ -58674,7 +58674,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/AIModelNameplate/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/AIModelNameplate/1/0/CD",
       "idShort": "AIModelNameplate",
       "modelType": "ConceptDescription"
     },
@@ -69382,7 +69382,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/ProductionCalendar/1/0/CD",
       "idShort": "ProductionCalendar",
       "modelType": "ConceptDescription"
     },
@@ -90094,7 +90094,7 @@
           }
         }
       ],
-      "id": "https://admin-shell.io/ZVEI/TechnicalData/Submodel/1/2",
+      "id": "https://admin-shell.io/ZVEI/TechnicalData/Submodel/1/2/CD",
       "idShort": "TechnicalData",
       "modelType": "ConceptDescription"
     },

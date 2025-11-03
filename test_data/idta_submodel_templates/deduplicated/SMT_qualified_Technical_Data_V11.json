@@ -6,7 +6,7 @@
         "assetType": "Type",
         "globalAssetId": "https://admin-shell.io/idta/asset/TechnicalData/1/1"
       },
-      "id": "https://admin-shell.io/idta/aas/TechnicalData/1/1",
+      "id": "https://admin-shell.io/idta/aas/TechnicalData/1/1/Qualified",
       "idShort": "TechnicalDataAAS",
       "modelType": "AssetAdministrationShell",
       "submodels": [
@@ -38,7 +38,7 @@
           "text": "Submodel containing techical data to the asset and associated product classificatons"
         }
       ],
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/TechnicalData/1/1",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/TechnicalData/1/1/Qualified",
       "idShort": "TechnicalData",
       "kind": "Instance",
       "modelType": "Submodel",

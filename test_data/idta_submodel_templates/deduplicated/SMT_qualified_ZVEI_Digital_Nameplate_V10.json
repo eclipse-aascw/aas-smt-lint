@@ -6,7 +6,7 @@
         "assetType": "Type",
         "globalAssetId": "https://admin-shell.io/idta/asset/DigitalNameplate/1/0"
       },
-      "id": "https://admin-shell.io/idta/aas/DigitalNameplate/1/0",
+      "id": "https://admin-shell.io/idta/aas/DigitalNameplate/1/0/qualified",
       "idShort": "SampleDigitalNameplateAAS",
       "modelType": "AssetAdministrationShell",
       "submodels": [
@@ -24,7 +24,7 @@
   ],
   "submodels": [
     {
-      "id": "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/1/0",
+      "id": "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/1/0/qualified",
       "idShort": "Nameplate",
       "kind": "Template",
       "modelType": "Submodel",

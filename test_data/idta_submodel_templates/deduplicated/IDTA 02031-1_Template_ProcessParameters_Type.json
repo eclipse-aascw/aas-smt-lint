@@ -51,7 +51,7 @@
         "keys": [
           {
             "type": "GlobalReference",
-            "value": "https://admin-shell-io/idta/SubmodelTemplate/ProcessParameters/1/0"
+            "value": "https://admin-shell-io/idta/SubmodelTemplate/ProcessParameters/1/0/CD"
           }
         ],
         "type": "ExternalReference"

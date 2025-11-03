@@ -8,6 +8,7 @@
       },
       "id": "https://admin-shell.io/idta/aas/AIDeployment/1/0",
       "idShort": "AIDeploymentAAS",
+
       "modelType": "AssetAdministrationShell",
       "submodels": [
         {
@@ -15,8 +16,7 @@
             {
               "type": "Submodel",
               "value": "https://admin-shell.io/idta/SubmodelTemplate/AIDeployment/1/0"
-            }
-          ],
+            }],
           "type": "ModelReference"
         }
       ]
@@ -42,7 +42,7 @@
         "keys": [
           {
             "type": "GlobalReference",
-            "value": "https://admin-shell.io/idta/SubmodelTemplate/AIDeployment/1/0"
+            "value": "https://admin-shell.io/idta/SubmodelTemplate/AIDeployment/1/0/CD"
           }
         ],
         "type": "ExternalReference"
