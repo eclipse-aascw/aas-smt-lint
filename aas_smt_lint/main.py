@@ -21,6 +21,7 @@ from typing import (
     cast,
     MutableMapping,
     Mapping,
+    Set,
 )
 
 from aas_core3 import (
@@ -959,6 +960,67 @@ def verify_id_shorts_for_plural_singular(
                 )
 
 
+def verify_dangling_references(environment: aas_types.Environment) -> Iterator[Message]:
+    """Check that all collections without children are defined elsewhere."""
+    set_of_ids_of_defined_structures = set()  # type: Set[str]
+
+    # region Collect IDs of the definitions
+
+    for submodel in environment.over_submodels_or_empty():
+        set_of_ids_of_defined_structures.add(submodel.id)
+
+    for element, path in _over_elements_of_environment(environment):
+        if not isinstance(element, aas_types.SubmodelElementCollection):
+            continue
+
+        # NOTE (mristin):
+        # If there are no children, we assume that it is a reference.
+        if element.value is None or len(element.value) == 0:
+            continue
+
+        global_id, error = _try_global_id(element)
+        if error is not None:
+            yield Message(level=Level.ERROR, text=error, path=path)
+            continue
+
+        assert global_id is not None
+        set_of_ids_of_defined_structures.add(global_id)
+
+    # endregion
+
+    # region Check collections as references
+
+    for element, path in _over_elements_of_environment(environment):
+        if not isinstance(element, aas_types.SubmodelElementCollection):
+            continue
+
+        # NOTE (mristin):
+        # We assume that only collections without elements are references.
+        if element.value is not None and len(element.value) > 0:
+            continue
+
+        global_id, error = _try_global_id(element)
+        if error is not None:
+            yield Message(level=Level.ERROR, text=error, path=path)
+            continue
+
+        assert global_id is not None
+
+        if global_id not in set_of_ids_of_defined_structures:
+            yield Message(
+                level=Level.ERROR,
+                text=(
+                    f"The collection references the structure {global_id} "
+                    f"through its semantic ID, but the structure has not been "
+                    f"previously defined (neither as submodel template "
+                    f"nor as embedded submodel element collection)."
+                ),
+                path=path,
+            )
+
+    # endregion
+
+
 def verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from verify_all_submodels_are_templates(environment)
@@ -976,6 +1038,8 @@ def verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from verify_arity_of_non_list_elements(environment)
 
     yield from verify_id_shorts_for_plural_singular(environment)
+
+    yield from verify_dangling_references(environment)
 
 
 def main(prog: str) -> int:

@@ -421,6 +421,11 @@ def main() -> int:
             "unexpected_id_shorts",
             "Unexpected ID-shorts",
         ),
+        (
+            aas_smt_lint.main.verify_dangling_references,
+            "dangling_references",
+            "Dangling references",
+        ),
     ]:
         messages_by_path_node = VerificationNode(
             verification_func=verification_func,

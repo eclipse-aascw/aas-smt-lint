@@ -13,6 +13,7 @@ from aas_smt_lint.main import (
     _WhitespaceChecker,
     Message,
     verify_id_shorts_for_plural_singular,
+    verify_dangling_references,
     Level,
 )
 
@@ -252,6 +253,173 @@ class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
             messages[0].text,
             "Expected the ID-short in singular for non-aggregations, "
             "but got plural for Property: 'dataItems'",
+        )
+
+
+class TestVerifyDanglingReferences(unittest.TestCase):
+    def test_no_dangling_references_no_errors(self) -> None:
+        collection_as_definition = aas_types.SubmodelElementCollection(
+            id_short="test_collection",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/test_collection",
+                    )
+                ],
+            ),
+            value=[
+                aas_types.Property(
+                    id_short="test_prop",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                )
+            ],
+        )
+
+        collection_as_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection_ref",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/test_collection",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_as_definition, collection_as_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_dangling_reference_error(self) -> None:
+        collection_as_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection_ref",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/nonexistent_collection",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_as_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.ERROR)
+        self.assertEqual(
+            "The collection references the structure "
+            "https://example.com/nonexistent_collection through its semantic ID, "
+            "but the structure has not been previously defined (neither as submodel "
+            "template nor as embedded submodel element collection).",
+            messages[0].text,
+        )
+
+    def test_collection_with_invalid_semantic_id_error(self) -> None:
+        collection_semantic_id_model_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.MODEL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.SUBMODEL,
+                        value="invalid_reference",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_semantic_id_model_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.ERROR)
+        self.assertEqual(
+            "The semantic ID of the submodel element collection "
+            "with ID-short 'test_collection' was expected to be an external reference "
+            "with a single global reference key, but it was "
+            "not: {'type': 'ModelReference', "
+            "'keys': [{'type': 'Submodel', 'value': 'invalid_reference'}]}",
+            messages[0].text,
+        )
+
+    def test_multiple_dangling_references(self) -> None:
+        collection_dangling_ref1 = aas_types.SubmodelElementCollection(
+            id_short="ref1",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/missing1",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        collection_dangling_ref2 = aas_types.SubmodelElementCollection(
+            id_short="ref2",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/missing2",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_dangling_ref1, collection_dangling_ref2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 2)
+        self.assertTrue(all(msg.level == Level.ERROR for msg in messages))
+        self.assertEqual(
+            "The collection references the structure https://example.com/missing1 "
+            "through its semantic ID, but the structure has not been previously "
+            "defined (neither as submodel template nor as embedded submodel element "
+            "collection).",
+            messages[0].text,
+        )
+        self.assertEqual(
+            "The collection references the structure https://example.com/missing2 "
+            "through its semantic ID, but the structure has not been previously "
+            "defined (neither as submodel template nor as embedded submodel element "
+            "collection).",
+            messages[1].text,
         )
 
 
