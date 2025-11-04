@@ -412,9 +412,9 @@ def main() -> int:
             "Arbitrary structures",
         ),
         (
-            aas_smt_lint.main.verify_arity_of_non_list_elements,
-            "unexpected_arity",
-            "Unexpected arity of non-list elements",
+            aas_smt_lint.main.verify_cardinality,
+            "unexpected_cardinality",
+            "Unexpected cardinalities",
         ),
         (
             aas_smt_lint.main.verify_id_shorts_for_plural_singular,
