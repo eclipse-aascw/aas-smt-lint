@@ -12,6 +12,7 @@ from aas_smt_lint.main import (
     GlobalIdentifier,
     _WhitespaceChecker,
     Message,
+    verify_arity_of_non_list_elements,
     verify_id_shorts_for_plural_singular,
     verify_dangling_references,
     Level,
@@ -420,6 +421,180 @@ class TestVerifyDanglingReferences(unittest.TestCase):
             "defined (neither as submodel template nor as embedded submodel element "
             "collection).",
             messages[1].text,
+        )
+
+
+class TestArityInNonListElements(unittest.TestCase):
+    def test_no_arity_no_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="dataItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_arity_of_non_list_elements(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_allowed_arity_no_error(self) -> None:
+        prop_1 = aas_types.Property(
+            id_short="mandatoryItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="One",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        prop_2 = aas_types.Property(
+            id_short="optionalItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop_1, prop_2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_arity_of_non_list_elements(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_list_arity_no_error(self) -> None:
+        item_1 = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_1 = aas_types.SubmodelElementList(
+            id_short="OptionalList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item_1],
+        )
+
+        item_2 = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="OneToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_2 = aas_types.SubmodelElementList(
+            id_short="MandatoryList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="One",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item_2],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[list_1, list_2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_arity_of_non_list_elements(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_arbitrary_arity_no_error(self) -> None:
+        arbitrary = aas_types.Property(
+            id_short="arbitrary",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/SMT/General/Arbitrary",
+                    )
+                ],
+            ),
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[arbitrary],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_arity_of_non_list_elements(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_invalid_arity_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="propertyElem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_arity_of_non_list_elements(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Found arity of ZeroToMany for non-list element.",
         )
 
 
