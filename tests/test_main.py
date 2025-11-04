@@ -12,7 +12,7 @@ from aas_smt_lint.main import (
     GlobalIdentifier,
     _WhitespaceChecker,
     Message,
-    verify_arity_of_non_list_elements,
+    verify_cardinality,
     verify_id_shorts_for_plural_singular,
     verify_dangling_references,
     Level,
@@ -424,8 +424,8 @@ class TestVerifyDanglingReferences(unittest.TestCase):
         )
 
 
-class TestArityInNonListElements(unittest.TestCase):
-    def test_no_arity_no_error(self) -> None:
+class TestVerifyCardinality(unittest.TestCase):
+    def test_no_cardinality_no_error(self) -> None:
         prop = aas_types.Property(
             id_short="dataItem",
             value_type=aas_types.DataTypeDefXSD.STRING,
@@ -437,10 +437,10 @@ class TestArityInNonListElements(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(verify_arity_of_non_list_elements(environment))
+        messages = list(verify_cardinality(environment))
         self.assertEqual(len(messages), 0)
 
-    def test_allowed_arity_no_error(self) -> None:
+    def test_allowed_cardinality_no_error(self) -> None:
         prop_1 = aas_types.Property(
             id_short="mandatoryItem",
             value_type=aas_types.DataTypeDefXSD.STRING,
@@ -472,17 +472,17 @@ class TestArityInNonListElements(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(verify_arity_of_non_list_elements(environment))
+        messages = list(verify_cardinality(environment))
         self.assertEqual(len(messages), 0)
 
-    def test_list_arity_no_error(self) -> None:
+    def test_list_cardinality_no_error(self) -> None:
         item_1 = aas_types.Property(
             value_type=aas_types.DataTypeDefXSD.STRING,
             qualifiers=[
                 aas_types.Qualifier(
                     type="SMT/Cardinality",
                     value_type=aas_types.DataTypeDefXSD.STRING,
-                    value="ZeroToMany",
+                    value="OneToMany",
                     kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
                 )
             ],
@@ -534,10 +534,10 @@ class TestArityInNonListElements(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(verify_arity_of_non_list_elements(environment))
+        messages = list(verify_cardinality(environment))
         self.assertEqual(len(messages), 0)
 
-    def test_arbitrary_arity_no_error(self) -> None:
+    def test_arbitrary_cardinality_no_error(self) -> None:
         arbitrary = aas_types.Property(
             id_short="arbitrary",
             value_type=aas_types.DataTypeDefXSD.STRING,
@@ -566,10 +566,10 @@ class TestArityInNonListElements(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(verify_arity_of_non_list_elements(environment))
+        messages = list(verify_cardinality(environment))
         self.assertEqual(len(messages), 0)
 
-    def test_invalid_arity_error(self) -> None:
+    def test_invalid_cardinality_error(self) -> None:
         prop = aas_types.Property(
             id_short="propertyElem",
             value_type=aas_types.DataTypeDefXSD.STRING,
@@ -589,12 +589,66 @@ class TestArityInNonListElements(unittest.TestCase):
         )
         environment = aas_types.Environment(submodels=[submodel])
 
-        messages = list(verify_arity_of_non_list_elements(environment))
+        messages = list(verify_cardinality(environment))
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].level, Level.WARNING)
         self.assertEqual(
             messages[0].text,
-            "Found arity of ZeroToMany for non-list element.",
+            "Unexpected cardinality of 'ZeroToMany'; only 'ZeroToOne' or 'One' "
+            "are expected for an element of a composition",
+        )
+
+    def test_list_item_zero_to_many_cardinality_warning(self) -> None:
+        # NOTE (mristin):
+        # To our current understanding, there is no case where zero-to-many cardinality
+        # can be used. To model it, you make a list zero-to-many. However, the template
+        # item contained in the list should always have one-to-many, as AAS lists
+        # *can not* be empty (only omitted/not specified).
+        #
+        # This is due to the constraint in the meta-model:
+        # https://aas-core-works.github.io/aas-core-meta/v3/SubmodelElementList.html#invariants
+        #
+        # "Value must be either not set or have at least one item."
+
+        item = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_element = aas_types.SubmodelElementList(
+            id_short="TestList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[list_element],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected cardinality of 'OneToMany' for a template item of a list, "
+            "but got 'ZeroToMany'",
         )
 
 

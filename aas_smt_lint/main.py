@@ -795,56 +795,159 @@ _CARDINALITY_QUALIFIERS_SET = {
 } | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
 
 
-def _verify_arity_of_non_list_elements_of_composed(
+class _Cardinality(enum.Enum):
+    ZERO_TO_ONE = "ZeroToOne"
+    ONE = "One"
+    ZERO_TO_MANY = "ZeroToMany"
+    ONE_TO_MANY = "OneToMany"
+
+
+_CARDINALITY_BY_VALUE = {cardinality.value: cardinality for cardinality in _Cardinality}
+
+
+@ensure(
+    lambda result: not (result[0] is not None) or (result[1] is None),
+    "No error if result",
+)
+def _determine_cardinality(
+    element: aas_types.SubmodelElement,
+) -> Tuple[Optional[_Cardinality], Optional[str]]:
+    """
+    Determine the cardinality based on one of the cardinality qualifiers.
+
+    Return the cardinality (or none, if not specified), or an error, if the cardinality
+    could not be defined (*e.g.*, in case of multiple cardinality qualifiers).
+    """
+    cardinality_qualifiers = [
+        qualifier
+        for qualifier in element.over_qualifiers_or_empty()
+        if qualifier.type in _CARDINALITY_QUALIFIERS_SET
+    ]
+
+    if len(cardinality_qualifiers) == 0:
+        return None, None
+
+    elif len(cardinality_qualifiers) == 1:
+        cardinality_qualifier = cardinality_qualifiers[0]
+
+        if cardinality_qualifier.value is None:
+            return None, "Unexpected cardinality qualifier without value"
+
+        cardinality = _CARDINALITY_BY_VALUE.get(cardinality_qualifier.value, None)
+        if cardinality is None:
+            return None, f"Unexpected cardinality value {cardinality_qualifier.value!r}"
+
+        return cardinality, None
+
+    elif len(cardinality_qualifiers) > 1:
+        return None, "Unexpected multiple cardinality qualifiers"
+
+    else:
+        raise AssertionError(f"Unexpected case {len(cardinality_qualifiers)=}")
+
+
+def _verify_cardinality_recursively(
     container: Union[aas_types.Submodel, aas_types.SubmodelElementCollection],
     prefix: Path,
 ) -> Iterator[Message]:
-    for elem, elem_path in _over_elements_of_container_non_recursive(
+    for elem, path in _over_elements_of_container_non_recursive(
         container,
         prefix,
     ):
-        if isinstance(elem, (aas_types.Submodel, aas_types.SubmodelElementCollection)):
-            yield from _verify_arity_of_non_list_elements_of_composed(
-                container, elem_path
-            )
-
-        if _is_arbitrary_element(elem):
-            # NOTE (empwilli): while we discourage the use of arbitrary
-            # elements, it makes sense to use a ZeroToOne/OneToMany
-            # qualifier for them. As such we don't bother checking for them.
-            continue
-
-        cardinality_qualifiers = []
-
-        for qualifier in elem.over_qualifiers_or_empty():
-            if qualifier.type in _CARDINALITY_QUALIFIERS_SET:
-                cardinality_qualifiers.append(qualifier)
-
-        if len(cardinality_qualifiers) == 0:
-            continue
-
-        assert len(cardinality_qualifiers) == 1
-
-        cardinality_qualifier = cardinality_qualifiers[0]
-
-        if cardinality_qualifier.value in ["ZeroToMany", "OneToMany"]:
+        cardinality, cardinality_error = _determine_cardinality(elem)
+        if cardinality_error is not None:
             yield Message(
-                level=Level.WARNING,
-                text=(
-                    f"Found arity of {cardinality_qualifier.value} "
-                    f"for non-list element."
-                ),
-                path=elem_path,
+                level=Level.ERROR,
+                text=(f"Failed to determine cardinality: {cardinality_error}"),
+                path=path,
             )
 
+        if cardinality is not None:
+            # NOTE (empwilli):
+            # While we discourage the use of arbitrary elements, it makes sense to use a
+            # ZeroToOne/OneToMany qualifier for them. As such we don't bother checking
+            # for them.
+            if _is_arbitrary_element(elem):
+                pass
 
-def verify_arity_of_non_list_elements(
+            else:
+                if cardinality not in (_Cardinality.ZERO_TO_ONE, _Cardinality.ONE):
+                    yield Message(
+                        level=Level.WARNING,
+                        text=(
+                            f"Unexpected cardinality of {cardinality.value!r}; "
+                            f"only {_Cardinality.ZERO_TO_ONE.value!r} or "
+                            f"{_Cardinality.ONE.value!r} are expected "
+                            f"for an element of a composition"
+                        ),
+                        path=path,
+                    )
+
+        if isinstance(elem, aas_types.SubmodelElementList):
+            # NOTE (mristin):
+            # We only check the cardinality if there is a clear template item element.
+            # We do not know what to do in light of many template items.
+            if elem.value is not None and len(elem.value) == 1:
+                child = elem.value[0]
+
+                child_cardinality, child_cardinality_error = _determine_cardinality(
+                    child
+                )
+                if child_cardinality_error is not None:
+                    yield Message(
+                        level=Level.ERROR,
+                        text=child_cardinality_error,
+                        path=Path(list(path.fragments) + [0]),
+                    )
+                else:
+                    if (
+                        child_cardinality is not None
+                        and child_cardinality is not _Cardinality.ONE_TO_MANY
+                    ):
+                        yield Message(
+                            level=Level.WARNING,
+                            text=(
+                                f"Expected cardinality "
+                                f"of {_Cardinality.ONE_TO_MANY.value!r} for a template "
+                                f"item of a list, but got {child_cardinality.value!r}"
+                            ),
+                            path=Path(fragments=list(path.fragments) + [0]),
+                        )
+
+            for i, child in enumerate(elem.over_value_or_empty()):
+                if isinstance(child, aas_types.SubmodelElementCollection):
+                    yield from _verify_cardinality_recursively(
+                        container=child,
+                        prefix=Path(fragments=list(path.fragments) + [i]),
+                    )
+
+        elif isinstance(elem, aas_types.SubmodelElementCollection):
+            yield from _verify_cardinality_recursively(container=elem, prefix=path)
+
+        else:
+            # NOTE (mristin):
+            # Recursion is only possible on lists and collections.
+            pass
+
+
+def verify_cardinality(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
-    """Check for non-list elements with arity not ZeroToOne or OneToMany."""
+    """
+    Check that all elements have valid cardinality set.
+
+    We enforce that all children of submodels and collections can have either
+    ``ZeroToOne`` or ``One`` cardinality set.
+
+    When it comes to lists, the rules are still a bit blurry. For now, we only check
+    lists containing a single prototype item element, and enforce that the item element
+    has cardinality ``OneToMany``.
+
+    To our current knowledge, there is no use of ``ZeroToMany`` qualifier.
+    """
     for submodel in environment.over_submodels_or_empty():
-        yield from _verify_arity_of_non_list_elements_of_composed(
-            submodel, Path([submodel.id])
+        yield from _verify_cardinality_recursively(
+            container=submodel, prefix=Path([submodel.id])
         )
 
 
@@ -1047,7 +1150,7 @@ def verify(environment: aas_types.Environment) -> Iterator[Message]:
 
     yield from verify_arbitraries(environment)
 
-    yield from verify_arity_of_non_list_elements(environment)
+    yield from verify_cardinality(environment)
 
     yield from verify_id_shorts_for_plural_singular(environment)
 
