@@ -1136,6 +1136,65 @@ def verify_dangling_references(environment: aas_types.Environment) -> Iterator[M
     # endregion
 
 
+def _verify_value_type(
+    environment: aas_types.Environment,
+    bad_value_type: aas_types.DataTypeDefXSD,
+    message_text: str,
+) -> Iterator[Message]:
+    """
+    Warn that we should replace ``bad_value_type`` with something else.
+
+    This check considers Properties and Ranges.
+    """
+    for element, path in _over_elements_of_environment(environment):
+        if not isinstance(element, (aas_types.Property, aas_types.Range)):
+            continue
+
+        if element.value_type is bad_value_type:
+            yield Message(level=Level.WARNING, text=message_text, path=path)
+
+
+def verify_no_xs_decimal(environment: aas_types.Environment) -> Iterator[Message]:
+    """Warn that ``xs:decimal`` is used as a value type."""
+    yield from _verify_value_type(
+        environment,
+        bad_value_type=aas_types.DataTypeDefXSD.DECIMAL,
+        message_text=(
+            f"Consider using value type {aas_types.DataTypeDefXSD.DOUBLE.value!r} "
+            f"instead of {aas_types.DataTypeDefXSD.DECIMAL.value!r} since the latter "
+            f"implies arbitrary precision, while the former is fixed precision."
+        ),
+    )
+
+
+def verify_no_xs_integer(environment: aas_types.Environment) -> Iterator[Message]:
+    """Warn that ``xs:integer`` is used as a value type."""
+    yield from _verify_value_type(
+        environment,
+        bad_value_type=aas_types.DataTypeDefXSD.INTEGER,
+        message_text=(
+            f"Consider using value type {aas_types.DataTypeDefXSD.INT.value!r} or "
+            f"{aas_types.DataTypeDefXSD.LONG.value!r}"
+            f"instead of {aas_types.DataTypeDefXSD.INTEGER.value!r} since the latter "
+            f"implies arbitrary precision, while the former two are fixed precision."
+        ),
+    )
+
+
+def verify_no_xs_float(environment: aas_types.Environment) -> Iterator[Message]:
+    """Warn that ``xs:float`` is used as a value type."""
+    yield from _verify_value_type(
+        environment,
+        bad_value_type=aas_types.DataTypeDefXSD.FLOAT,
+        message_text=(
+            f"Consider using value type {aas_types.DataTypeDefXSD.DOUBLE.value!r} "
+            f"instead of {aas_types.DataTypeDefXSD.FLOAT.value!r} since the latter "
+            f"requires 32-bit representation, which can incur conversion overhead "
+            f"on modern hardware operating with 64-bits."
+        ),
+    )
+
+
 def verify(environment: aas_types.Environment) -> Iterator[Message]:
     """Assess the quality of the submodel templates in the given environment."""
     yield from verify_all_submodels_are_templates(environment)
@@ -1155,6 +1214,12 @@ def verify(environment: aas_types.Environment) -> Iterator[Message]:
     yield from verify_id_shorts_for_plural_singular(environment)
 
     yield from verify_dangling_references(environment)
+
+    yield from verify_no_xs_integer(environment)
+
+    yield from verify_no_xs_decimal(environment)
+
+    yield from verify_no_xs_float(environment)
 
 
 def main(prog: str) -> int:
