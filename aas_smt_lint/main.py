@@ -758,40 +758,36 @@ def verify_qualifier_kinds(environment: aas_types.Environment) -> Iterator[Messa
                 )
 
 
-_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT: Final[str] = (
-    "Found annotation of an arbitrary element."
-)
+def _is_arbitrary_element(element: aas_types.SubmodelElement) -> bool:
+    # NOTE (empwilli 2025-10-29):
+    # Not all SMTs properly implement arbitrary annotations, so we are a little bit
+    # lenient for the semantic ID check and check the ID-short, as well.
+    match element.semantic_id:
+        case aas_types.Reference(
+            type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+            keys=[
+                aas_types.Key(
+                    type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                    value=value,
+                )
+            ],
+        ) if value.startswith("https://admin-shell.io/SMT/General/Arbitrary"):
+            return True
+        case _ if "arbitrary" in (element.id_short or "").lower():
+            return True
+        case _:
+            return False
 
 
 def verify_arbitraries(environment: aas_types.Environment) -> Iterator[Message]:
     """Warn for elements marked as arbitrary."""
     for submodel_element, path in _over_elements_of_environment(environment):
-        # NOTE (empwilli 2025-10-29):
-        # Not all SMTs properly implement arbitrary annotations, so we are a little bit
-        # lenient for the semantic ID check and check the ID-short, as well.
-        match submodel_element.semantic_id:
-            case aas_types.Reference(
-                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
-                keys=[
-                    aas_types.Key(
-                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
-                        value=value,
-                    )
-                ],
-            ) if value.startswith("https://admin-shell.io/SMT/General/Arbitrary"):
-                yield Message(
-                    level=Level.WARNING,
-                    text=_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT,
-                    path=path,
-                )
-            case _ if "arbitrary" in (submodel_element.id_short or "").lower():
-                yield Message(
-                    level=Level.WARNING,
-                    text=_FOUND_ARBITRARY_ELEMENT_MESSAGE_TEXT,
-                    path=path,
-                )
-            case _:
-                continue
+        if _is_arbitrary_element(submodel_element):
+            yield Message(
+                level=Level.WARNING,
+                text="Found annotation of an arbitrary element.",
+                path=path,
+            )
 
 
 _CARDINALITY_QUALIFIERS_SET = {
@@ -799,41 +795,57 @@ _CARDINALITY_QUALIFIERS_SET = {
 } | _DEPRECATED_CARDINALITY_QUALIFIERS_SET
 
 
+def _verify_arity_of_non_list_elements_of_composed(
+    container: Union[aas_types.Submodel, aas_types.SubmodelElementCollection],
+    prefix: Path,
+) -> Iterator[Message]:
+    for elem, elem_path in _over_elements_of_container_non_recursive(
+        container,
+        prefix,
+    ):
+        if isinstance(elem, (aas_types.Submodel, aas_types.SubmodelElementCollection)):
+            yield from _verify_arity_of_non_list_elements_of_composed(
+                container, elem_path
+            )
+
+        if _is_arbitrary_element(elem):
+            # NOTE (empwilli): while we discourage the use of arbitrary
+            # elements, it makes sense to use a ZeroToOne/OneToMany
+            # qualifier for them. As such we don't bother checking for them.
+            continue
+
+        cardinality_qualifiers = []
+
+        for qualifier in elem.over_qualifiers_or_empty():
+            if qualifier.type in _CARDINALITY_QUALIFIERS_SET:
+                cardinality_qualifiers.append(qualifier)
+
+        if len(cardinality_qualifiers) == 0:
+            continue
+
+        assert len(cardinality_qualifiers) == 1
+
+        cardinality_qualifier = cardinality_qualifiers[0]
+
+        if cardinality_qualifier.value in ["ZeroToMany", "OneToMany"]:
+            yield Message(
+                level=Level.WARNING,
+                text=(
+                    f"Found arity of {cardinality_qualifier.value} "
+                    f"for non-list element."
+                ),
+                path=elem_path,
+            )
+
+
 def verify_arity_of_non_list_elements(
     environment: aas_types.Environment,
 ) -> Iterator[Message]:
     """Check for non-list elements with arity not ZeroToOne or OneToMany."""
-    for container, path in _over_elements_of_environment(environment):
-        if not isinstance(
-            container, (aas_types.Submodel, aas_types.SubmodelElementCollection)
-        ):
-            continue
-
-        for elem, elem_path in _over_elements_of_container_non_recursive(
-            container, path
-        ):
-            cardinality_qualifiers = []
-
-            for qualifier in elem.over_qualifiers_or_empty():
-                if qualifier.type in _CARDINALITY_QUALIFIERS_SET:
-                    cardinality_qualifiers.append(qualifier)
-
-            if len(cardinality_qualifiers) == 0:
-                continue
-
-            assert len(cardinality_qualifiers) == 1
-
-            cardinality_qualifier = cardinality_qualifiers[0]
-
-            if cardinality_qualifier.value not in ["ZeroToMany", "OneToMany"]:
-                yield Message(
-                    level=Level.WARNING,
-                    text=(
-                        f"Found arity of {cardinality_qualifier.value} "
-                        f"for non-list element."
-                    ),
-                    path=elem_path,
-                )
+    for submodel in environment.over_submodels_or_empty():
+        yield from _verify_arity_of_non_list_elements_of_composed(
+            submodel, Path([submodel.id])
+        )
 
 
 _CAMEL_CASE_PART_RE = re.compile(r"[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+")
