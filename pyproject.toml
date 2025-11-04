@@ -41,7 +41,8 @@ dev = [
 ]
 
 impact_analysis = [
-    "fsdag==1.0.1"
+    "fsdag==1.0.1",
+    "matplotlib==3.10.7"
 ]
 
 [project.scripts]

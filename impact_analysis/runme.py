@@ -5,7 +5,6 @@ import collections
 import os
 import pathlib
 import pickle
-import statistics
 import sys
 from typing import (
     Sequence,
@@ -19,6 +18,8 @@ from typing import (
 )
 
 import fsdag
+import matplotlib.pyplot
+import matplotlib.figure
 from aas_core3 import (
     types as aas_types,
     verification as aas_verification,
@@ -27,6 +28,7 @@ from icontract import require
 
 import aas_smt_lint.main
 from aas_smt_lint.common import bullet_points, NonNegativeInt
+
 
 # pylint: disable=missing-docstring
 
@@ -312,22 +314,80 @@ def render_statistics(counts: Sequence[int]) -> str:
     >>> render_statistics([2, 2, 5, 0, 1])
     '2.0 ± 1.9, p25=1.0, p50=2.0, p75=2.0, max. 5'
     """
-    mean = statistics.mean(counts)
-    stddev = statistics.stdev(counts)
-    the_max = max(counts)
-
-    zero_count = sum(1 for count in counts if count == 0)
-
-    p25, p50, p75 = statistics.quantiles(  # pylint: disable=unbalanced-tuple-unpacking
-        sorted(counts), n=4, method="inclusive"
-    )
+    histogram = [
+        sum(1 for count in counts if count == 0),
+        sum(1 for count in counts if 1 <= count <= 5),
+        sum(1 for count in counts if 6 <= count <= 10),
+        sum(1 for count in counts if count > 10),
+    ]
 
     return (
         f"{len(counts)} sample(s), "
-        f"{mean:.1f} ± {stddev:.1f}, "
-        f"p25={p25:.0f}, p50={p50:.0f}, p75={p75:.0f}, max. {the_max}, "
-        f"observations of zero: {zero_count}"
+        f"histogram (0, 1-5, 6-10, >10): {histogram}, total: {sum(counts)}"
     )
+
+
+class DrawHistogram(fsdag.Node[matplotlib.figure.Figure]):
+    def __init__(
+        self,
+        counts_node: CountVerifications,
+        figure_path: pathlib.Path,
+        image_path: pathlib.Path,
+    ) -> None:
+        super().__init__()
+        self.counts_node = counts_node
+        self.figure_path = figure_path
+        self.image_path = image_path
+
+    def _path(self) -> pathlib.Path:
+        return self.figure_path
+
+    def _save(self, artefact: matplotlib.figure.Figure) -> None:
+        with self._path().open("wb") as fid:
+            # noinspection PyTypeChecker
+            pickle.dump(artefact, fid)
+
+        artefact.savefig(str(self.image_path))
+
+    def _load(self) -> matplotlib.figure.Figure:
+        with self._path().open("rb") as fid:
+            # noinspection PyTypeChecker
+            result = pickle.load(fid)
+            assert isinstance(result, matplotlib.figure.Figure)
+            return result
+
+    def _compute(self) -> matplotlib.figure.Figure:
+        counts: Sequence[NonNegativeInt] = self.counts_node.resolve()
+        histogram = [
+            sum(1 for count in counts if count == 0),
+            sum(1 for count in counts if 1 <= count <= 5),
+            sum(1 for count in counts if 6 <= count <= 10),
+            sum(1 for count in counts if count > 10),
+        ]
+
+        labels = ["0", "1–5", "6–10", ">10"]
+        colors = ["white", "lightgrey", "darkgrey", "black"]
+
+        fig, ax = matplotlib.pyplot.subplots(figsize=(3.5, 1.0))
+
+        ax.bar(
+            labels,
+            histogram,
+            color=colors,
+            edgecolor="black",
+            linewidth=0.8,
+            width=0.8,
+        )
+
+        # Remove axes, ticks, grid, and labels for a clean, compact look
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        ax.grid(False)
+
+        fig.tight_layout()
+        return fig
 
 
 def main() -> int:
@@ -426,6 +486,21 @@ def main() -> int:
             "dangling_references",
             "Dangling references",
         ),
+        (
+            aas_smt_lint.main.verify_no_xs_integer,
+            "xs_integers",
+            "Usages of xs:integers",
+        ),
+        (
+            aas_smt_lint.main.verify_no_xs_decimal,
+            "xs_decimals",
+            "Usages of xs:decimal",
+        ),
+        (
+            aas_smt_lint.main.verify_no_xs_float,
+            "xs_floats",
+            "Usages of xs:float",
+        ),
     ]:
         messages_by_path_node = VerificationNode(
             verification_func=verification_func,
@@ -442,6 +517,13 @@ def main() -> int:
             verification_node=messages_by_path_node,
             counts_path=data_dir / f"{identifier}_counts.pickle",
         )
+
+        (data_dir / "figures").mkdir(exist_ok=True)
+        DrawHistogram(
+            counts_node=counts_node,
+            figure_path=data_dir / "figures" / f"{identifier}.fig",
+            image_path=data_dir / "figures" / f"{identifier}.png",
+        ).resolve()
 
         print(f"{title}: {render_statistics(counts_node.resolve())}")
 
