@@ -161,6 +161,154 @@ class TestWhitespaceChecker(unittest.TestCase):
  bad_submodel .bad_prop: Surrounding whitespace in value"""
         self.assertEqual(expected, result)
 
+    def test_submodel_element_with_whitespace_error_in_qualifier(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    semantic_id=aas_types.Reference(
+                        type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                        keys=[
+                            aas_types.Key(
+                                type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                                value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                            ),
+                        ],
+                    ),
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_with_whitespace_in_semantic_id(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_with_whitespace_in_supplemental_semantic_ids(
+        self,
+    ) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            supplemental_semantic_ids=[
+                aas_types.Reference(
+                    type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                    keys=[
+                        aas_types.Key(
+                            type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                            value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                        ),
+                    ],
+                ),
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_list_with_whitespace_in_semantic_id_list_element(
+        self,
+    ) -> None:
+        prop = aas_types.Property(
+            id_short="prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+        )
+        sml = aas_types.SubmodelElementList(
+            id_short="bad_list",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            semantic_id_list_element=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+            value=[prop],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[sml],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_list: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_reference_element_with_whitespace_in_value(self) -> None:
+        prop = aas_types.ReferenceElement(
+            id_short="prop",
+            value=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
 
 class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
     def test_submodel_element_list_with_singular_id_short(self) -> None:

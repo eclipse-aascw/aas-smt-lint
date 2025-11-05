@@ -576,6 +576,49 @@ def _check_attributes_for_surrounding_whitespace(
                 )
 
 
+def _check_reference_for_whitespace(
+    reference: Optional[aas_types.Reference],
+) -> Iterator[str]:
+    """
+    Check that no reference key contains whitespaces.
+
+    Yield message texts if there is surrounding whitespace.
+    """
+    if reference is None:
+        return
+
+    for key in reference.keys:
+        if _has_surrounding_whitespace(key.value):
+            yield "Surrounding whitespace in a key value."
+        if _has_whitespace_in_middle(key.value):
+            yield "Whitespace in the middle of a key value."
+
+
+def _check_submodel_element_references(
+    elem: aas_types.SubmodelElement,
+) -> Iterator[str]:
+    """
+    Check all references of a submodel element that they contain no offending whitespaces.
+
+    Yield message texts if there are offending whitespace.
+    """
+
+    references: List[Optional[aas_types.Reference]] = [elem.semantic_id]
+
+    references.extend(elem.supplemental_semantic_ids or [])
+
+    for qualifier in elem.qualifiers or []:
+        references.append(qualifier.semantic_id)
+
+    if isinstance(elem, aas_types.ReferenceElement):
+        references.append(elem.value)
+    elif isinstance(elem, aas_types.SubmodelElementList):
+        references.append(elem.semantic_id_list_element)
+
+    for reference in references:
+        yield from _check_reference_for_whitespace(reference)
+
+
 class _WhitespaceChecker:
     def __init__(self) -> None:
         self._path = []  # type: List[Union[int, str]]
@@ -616,13 +659,12 @@ class _WhitespaceChecker:
         else:
             pass
 
-        if isinstance(that, aas_types.Key):
-            if _has_whitespace_in_middle(that.value):
-                yield Message(
-                    level=Level.WARNING,
-                    text="Whitespace in the middle of a key value",
-                    path=Path(self._path[:]),
-                )
+        for message in _check_submodel_element_references(that):
+            yield Message(
+                level=Level.WARNING,
+                text=message,
+                path=Path(self._path[:]),
+            )
 
     def check_submodel(self, that: aas_types.Submodel) -> Iterator[Message]:
         """Check the attributes of ``that`` submodel and recurse into its elements."""
