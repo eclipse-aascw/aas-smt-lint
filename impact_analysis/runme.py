@@ -2,6 +2,7 @@
 
 import argparse
 import collections
+import itertools
 import os
 import pathlib
 import pickle
@@ -487,19 +488,13 @@ def main() -> int:
             "Dangling references",
         ),
         (
-            aas_smt_lint.main.verify_no_xs_integer,
-            "xs_integers",
-            "Usages of xs:integers",
-        ),
-        (
-            aas_smt_lint.main.verify_no_xs_decimal,
-            "xs_decimals",
-            "Usages of xs:decimal",
-        ),
-        (
-            aas_smt_lint.main.verify_no_xs_float,
-            "xs_floats",
-            "Usages of xs:float",
+            lambda environment: itertools.chain(
+                aas_smt_lint.main.verify_no_xs_integer(environment),
+                aas_smt_lint.main.verify_no_xs_decimal(environment),
+                aas_smt_lint.main.verify_no_xs_float(environment),
+            ),
+            "unexpected_precision",
+            "Unexpected numeric precision",
         ),
     ]:
         messages_by_path_node = VerificationNode(
