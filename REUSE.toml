@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
+version = 1
+
+# Prose and metadata where a header would end up in the rendered output
+# (e.g., README shown on PyPI and GitHub).
+[[annotations]]
+path = ["AUTHORS", "README.rst", "CONTRIBUTING.rst"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 aas-smt-lint AUTHORS"
+SPDX-License-Identifier = "MIT"
+
+# The URL list is the output of dev_scripts/list_idta_submodel_templates.py,
+# so a header would be lost on the next update.
+[[annotations]]
+path = "test_data/idta_submodel_templates/url_list.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 aas-smt-lint AUTHORS"
+SPDX-License-Identifier = "MIT"
+
+# Third-party test data: the IDTA submodel templates are downloaded verbatim
+# from https://github.com/admin-shell-io/submodel-templates, which is licensed
+# under CC-BY-4.0. JSON can not carry a comment.
+[[annotations]]
+path = "test_data/idta_submodel_templates/originals/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Industrial Digital Twin Association e. V."
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# Third-party test data, modified: dev_scripts/deduplicate_idta_submodel_templates.py
+# derives these files from the originals above by moving the concept descriptions
+# to a separate file and re-formatting the JSON. They stay under CC-BY-4.0.
+[[annotations]]
+path = "test_data/idta_submodel_templates/deduplicated/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Industrial Digital Twin Association e. V."
+SPDX-License-Identifier = "CC-BY-4.0"

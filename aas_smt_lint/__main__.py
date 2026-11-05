@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 """Run aas-smt-lint as Python module."""
 
 import aas_smt_lint.main
