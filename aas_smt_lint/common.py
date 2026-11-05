@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 """Provide common functionality shared across modules."""
 
 import textwrap

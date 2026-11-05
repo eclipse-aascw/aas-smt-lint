@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
@@ -37,7 +41,8 @@ dev = [
     "mypy==1.18.1",
     "pylint==3.3.8",
     "requests==2.32.4",
-    "types-requests==2.32.4.20250913"
+    "types-requests==2.32.4.20250913",
+    "reuse==6.3.0"
 ]
 
 impact_analysis = [
