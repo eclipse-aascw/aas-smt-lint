@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 """Check that the help snippets in the Readme coincide with the actual output."""
 import argparse
 import difflib

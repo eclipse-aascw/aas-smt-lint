@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 """Analyze quantitatively our linting on official IDTA submodel templates."""
 
 import argparse

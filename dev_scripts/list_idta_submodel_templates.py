@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
 """List the URLs of all IDTA submodel templates on GitHub."""
 
 import pathlib
