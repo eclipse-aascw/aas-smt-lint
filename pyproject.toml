@@ -42,7 +42,10 @@ dev = [
 
 impact_analysis = [
     "fsdag==1.0.1",
-    "matplotlib==3.10.7"
+    "matplotlib==3.10.7",
+    # The type stubs of numpy 2.5 use the type statement, which mypy rejects
+    # when it checks for Python 3.10 (see python_version in [tool.mypy]).
+    "numpy<2.5"
 ]
 
 [project.scripts]
