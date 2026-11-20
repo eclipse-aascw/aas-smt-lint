@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "aas-smt-lint"
 # NOTE (mristin):
 # Do not forget to sync with __init__.py!
-version = "0.0.1"
+version = "1.0.0rc1"
 
 description = "Assess automatically the quality of AAS Submodel Templates."
 readme = "README.rst"
@@ -57,7 +57,7 @@ impact_analysis = [
 aas-smt-lint = "aas_smt_lint.main:entry_point"
 
 [project.urls]
-repository = "https://github.com/mristin/aas-smt-lint"
+repository = "https://github.com/eclipse-aascw/aas-smt-lint"
 
 [tool.setuptools.packages.find]
 include = ["aas_smt_lint"]
