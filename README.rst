@@ -2,8 +2,8 @@
 aas-smt-lint
 ************
 
-.. image:: https://github.com/mristin/aas-smt-lint/actions/workflows/ci.yml/badge.svg
-    :target: https://github.com/mristin/aas-smt-lint/actions/workflows/ci.yml
+.. image:: https://github.com/eclipse-aascw/aas-smt-lint/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/eclipse-aascw/aas-smt-lint/actions/workflows/ci.yml
     :alt: Continuous integration
 
 Assess automatically the quality of AAS Submodel Templates.

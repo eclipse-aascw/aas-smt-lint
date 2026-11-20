@@ -10,7 +10,7 @@ Before you create a pull request, please `create a new issue`_ first to coordina
 It might be that we are already working on the same or similar feature, but we 
 haven't made our work visible yet.
 
-.. _create a new issue: https://github.com/mristin/aas-smt-lint/issues/new
+.. _create a new issue: https://github.com/eclipse-aascw/aas-smt-lint/issues/new
 
 Create a Development Environment
 ================================
@@ -296,4 +296,4 @@ The scripts used to generate code or tests live in `dev_scripts/`_.
 The scripts are hopefully self-explaining.
 Please let us know if you need more information so that we can improve this documentation accordingly.
 
-.. _dev_scripts/: https://github.com/mristin/aas-smt-lint/tree/main/dev_scripts
+.. _dev_scripts/: https://github.com/eclipse-aascw/aas-smt-lint/tree/main/dev_scripts
