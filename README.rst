@@ -44,7 +44,7 @@ You can now run ``aas-smt-lint`` (see ``--help`` section below).
 .. Help starts: aas-smt-lint --help
 .. code-block::
 
-    usage: aas-smt-lint [-h] [--version] [--aas-version {3.0,3.1}]
+    usage: aas-smt-lint [-h] [--version] [--aas-version {3.0,3.1,3.2}]
                         paths [paths ...]
 
     Assess automatically the quality of AAS Submodel Templates.
@@ -57,7 +57,7 @@ You can now run ``aas-smt-lint`` (see ``--help`` section below).
     options:
       -h, --help            show this help message and exit
       --version             Show the current version and exit
-      --aas-version {3.0,3.1}
+      --aas-version {3.0,3.1,3.2}
                             Version of the AAS meta-model to verify against
                             (default: 3.1). XML files are checked to be in the
                             namespace of this version, while JSON files do not

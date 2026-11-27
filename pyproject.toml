@@ -33,6 +33,10 @@ dependencies = [
     "icontract>=2,<3",
     "aas-core3.0",
     "aas-core3.1",
+    # NOTE (mristin):
+    # Only release candidates of the SDK for V3.2 are available at the moment, and
+    # pip considers pre-releases only if the specifier mentions one explicitly.
+    "aas-core3.2>=1.0.0rc2",
     "inflect==7.5.0"
 ]
 

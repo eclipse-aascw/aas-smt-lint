@@ -16,6 +16,7 @@ from typing_extensions import assert_never
 import aas_smt_lint
 import aas_smt_lint.v3_0
 import aas_smt_lint.v3_1
+import aas_smt_lint.v3_2
 
 assert aas_smt_lint.__doc__ == __doc__
 
@@ -25,6 +26,7 @@ class AasVersion(enum.Enum):
 
     V3_0 = "3.0"
     V3_1 = "3.1"
+    V3_2 = "3.2"
 
 
 DEFAULT_AAS_VERSION = AasVersion.V3_1
@@ -97,6 +99,8 @@ def main(prog: str) -> int:
         return aas_smt_lint.v3_0.run(paths)
     elif aas_version is AasVersion.V3_1:
         return aas_smt_lint.v3_1.run(paths)
+    elif aas_version is AasVersion.V3_2:
+        return aas_smt_lint.v3_2.run(paths)
     else:
         assert_never(aas_version)
 

@@ -253,15 +253,16 @@ Versions of the AAS Meta-model
 
 We keep one copy of the linting code per version of the AAS meta-model, so that each copy is fully typed against its own aas-core SDK:
 
-* ``aas_smt_lint/v3_0.py`` uses ``aas_core3`` (AAS V3.0), and
-* ``aas_smt_lint/v3_1.py`` uses ``aas_core3_1`` (AAS V3.1).
+* ``aas_smt_lint/v3_0.py`` uses ``aas_core3`` (AAS V3.0),
+* ``aas_smt_lint/v3_1.py`` uses ``aas_core3_1`` (AAS V3.1), and
+* ``aas_smt_lint/v3_2.py`` uses ``aas_core3_2`` (AAS V3.2).
 
-The same holds for their unit tests, ``tests/test_v3_0.py`` and ``tests/test_v3_1.py``.
+The same holds for their unit tests, ``tests/test_v3_0.py``, ``tests/test_v3_1.py`` and ``tests/test_v3_2.py``.
 The code that does not depend on the meta-model lives in ``aas_smt_lint/common.py``.
 
 The copies must be textually identical, comments included, except for the import statements, which may differ only in the package names.
 This is checked by ``tests/test_version_modules_in_sync.py``.
-Usually, you change ``v3_1.py`` and copy the change over to ``v3_0.py``.
+Usually, you change ``v3_1.py`` and copy the change over to ``v3_0.py`` and ``v3_2.py``.
 
 If a definition needs to differ between the versions on purpose, list it together with the reason in ``EXCEPTIONS`` of ``tests/test_version_modules_in_sync.py``.
 The test also fails if a listed definition is identical in both copies, so that the exceptions do not go stale.
