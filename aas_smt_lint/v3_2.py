@@ -20,9 +20,9 @@ from typing import (
     Optional,
     Dict,
     Sequence,
+    Iterable,
     Iterator,
     Union,
-    get_args,
     MutableMapping,
     Mapping,
     Set,
@@ -244,92 +244,72 @@ def verify_all_submodels_are_templates(
             )
 
 
-_Container = Union[
-    aas_types.Submodel,
-    aas_types.SubmodelElementList,
-    aas_types.SubmodelElementCollection,
-]
+def _over_nested_elements(
+    that: Union[aas_types.Submodel, aas_types.SubmodelElement],
+) -> Iterator[Tuple[aas_types.SubmodelElement, Union[str, int]]]:
+    """
+    Iterate over the submodel elements directly nested in ``that``.
 
-_ContainerAsTuple = (
-    aas_types.Submodel,
-    aas_types.SubmodelElementList,
-    aas_types.SubmodelElementCollection,
-)
+    Yield each child together with its fragment in the ID-short path, *i.e.*, its
+    index for items of a submodel element list, and its ID-short otherwise.
 
-assert _ContainerAsTuple == get_args(_Container)
+    This is the single place which knows where the meta-model nests submodel
+    elements: in submodels, submodel element lists and collections, in the statements
+    of entities, in the annotations of annotated relationship elements, and
+    in the input, output and in-output variables of operations. All the checks
+    should iterate through here so that no nesting is silently skipped.
+    """
+    if isinstance(that, aas_types.SubmodelElementList):
+        for i, child in enumerate(that.over_value_or_empty()):
+            yield child, i
+        return
 
-
-def _over_elements_of_container_non_recursive(
-    container: _Container, prefix: Path
-) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
-    if isinstance(container, aas_types.Submodel):
-        for element in container.over_submodel_elements_or_empty():
-            assert (
-                element.id_short is not None
-            ), "All elements of a Submodel must have an ID-short."
-            path = Path(fragments=list(prefix.fragments) + [element.id_short])
-
-            yield element, path
-    elif isinstance(container, aas_types.SubmodelElementList):
-        for i, element in enumerate(container.over_value_or_empty()):
-            path = Path(fragments=list(prefix.fragments) + [i])
-
-            yield element, path
-    elif isinstance(container, aas_types.SubmodelElementCollection):
-        for element in container.over_value_or_empty():
-            assert (
-                element.id_short is not None
-            ), "All elements of a Submodel Element Collection must have an ID-short."
-            path = Path(fragments=list(prefix.fragments) + [element.id_short])
-
-            yield element, path
+    children: Iterable[aas_types.SubmodelElement]
+    if isinstance(that, aas_types.Submodel):
+        children = that.over_submodel_elements_or_empty()
+    elif isinstance(that, aas_types.SubmodelElementCollection):
+        children = that.over_value_or_empty()
+    elif isinstance(that, aas_types.Entity):
+        children = that.over_statements_or_empty()
+    elif isinstance(that, aas_types.AnnotatedRelationshipElement):
+        children = that.over_annotations_or_empty()
+    elif isinstance(that, aas_types.Operation):
+        children = (
+            variable.value
+            for variable in itertools.chain(
+                that.over_input_variables_or_empty(),
+                that.over_output_variables_or_empty(),
+                that.over_inoutput_variables_or_empty(),
+            )
+        )
     else:
-        # noinspection PyTypeChecker
-        assert_never(container)
+        return
+
+    for child in children:
+        # NOTE (mristin):
+        # Though the meta-model requires all these children to have ID-short set,
+        # we make our code robust to possible template mistakes in order to avoid
+        # confusion for the end user and still report *something*. The meta-model
+        # violations are reported separately.
+        yield child, (child.id_short if child.id_short is not None else "")
 
 
-def _over_elements_of_container_recursively(
-    container: _Container, prefix: Path
+def _over_nested_elements_with_paths(
+    that: Union[aas_types.Submodel, aas_types.SubmodelElement], prefix: Path
 ) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
-    if isinstance(container, aas_types.Submodel):
-        for element in container.over_submodel_elements_or_empty():
-            assert (
-                element.id_short is not None
-            ), "All elements of a Submodel must have an ID-short."
-            path = Path(fragments=list(prefix.fragments) + [element.id_short])
+    """Iterate over the elements nested in ``that`` with their full ID-short paths."""
+    for child, fragment in _over_nested_elements(that):
+        yield child, Path(fragments=list(prefix.fragments) + [fragment])
 
-            yield element, path
 
-            if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(
-                    container=element, prefix=path
-                )
-    elif isinstance(container, aas_types.SubmodelElementList):
-        for i, element in enumerate(container.over_value_or_empty()):
-            path = Path(fragments=list(prefix.fragments) + [i])
+def _over_nested_elements_recursively(
+    that: Union[aas_types.Submodel, aas_types.SubmodelElement], prefix: Path
+) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
+    """Iterate recursively, depth-first, over all the elements nested in ``that``."""
+    for child, path in _over_nested_elements_with_paths(that, prefix):
+        yield child, path
 
-            yield element, path
-
-            if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(
-                    container=element, prefix=path
-                )
-    elif isinstance(container, aas_types.SubmodelElementCollection):
-        for element in container.over_value_or_empty():
-            assert (
-                element.id_short is not None
-            ), "All elements of a Submodel Element Collection must have an ID-short."
-            path = Path(fragments=list(prefix.fragments) + [element.id_short])
-
-            yield element, path
-
-            if isinstance(element, _ContainerAsTuple):
-                yield from _over_elements_of_container_recursively(
-                    container=element, prefix=path
-                )
-    else:
-        # noinspection PyTypeChecker
-        assert_never(container)
+        yield from _over_nested_elements_recursively(child, path)
 
 
 def _over_elements_of_environment(
@@ -337,10 +317,8 @@ def _over_elements_of_environment(
 ) -> Iterator[Tuple[aas_types.SubmodelElement, Path]]:
     """Iterate over all the submodel elements contained in the environment."""
     for submodel in environment.over_submodels_or_empty():
-        prefix = Path(fragments=[submodel.id])
-
-        yield from _over_elements_of_container_recursively(
-            container=submodel, prefix=prefix
+        yield from _over_nested_elements_recursively(
+            submodel, prefix=Path(fragments=[submodel.id])
         )
 
 
@@ -388,7 +366,20 @@ def verify_redefinitions(
     """
     global_id_to_path: MutableMapping[GlobalIdentifier, Path] = dict()
 
-    for element, path in _over_elements_of_environment(environment):
+    # NOTE (mristin):
+    # We need to explicitly include the submodels as
+    # :py:func:`_over_elements_of_environment` only iterates over submodel elements.
+    submodels_and_elements: Iterator[
+        Tuple[Union[aas_types.Submodel, aas_types.SubmodelElement], Path]
+    ] = itertools.chain(
+        (
+            (submodel, Path(fragments=[submodel.id]))
+            for submodel in environment.over_submodels_or_empty()
+        ),
+        _over_elements_of_environment(environment),
+    )
+
+    for element, path in submodels_and_elements:
         if not isinstance(
             element, (aas_types.Submodel, aas_types.SubmodelElementCollection)
         ):
@@ -491,26 +482,43 @@ def _check_reference_for_whitespace(
             yield "Whitespace in the middle of a key value."
 
 
-def _check_submodel_element_references(
-    elem: aas_types.SubmodelElement,
+def _check_references(
+    elem: Union[aas_types.Submodel, aas_types.SubmodelElement],
 ) -> Iterator[str]:
     """
-    Check all references of a submodel element that they contain no offending whitespaces.
+    Check all references of ``elem`` that they contain no offending whitespaces.
 
     Yield message texts if there are offending whitespace.
     """
 
     references: List[Optional[aas_types.Reference]] = [elem.semantic_id]
 
-    references.extend(elem.supplemental_semantic_ids or [])
+    references.extend(elem.over_supplemental_semantic_ids_or_empty())
 
-    for qualifier in elem.qualifiers or []:
+    for qualifier in elem.over_qualifiers_or_empty():
         references.append(qualifier.semantic_id)
+        references.extend(qualifier.over_supplemental_semantic_ids_or_empty())
+        references.append(qualifier.value_id)
 
     if isinstance(elem, aas_types.ReferenceElement):
         references.append(elem.value)
     elif isinstance(elem, aas_types.SubmodelElementList):
         references.append(elem.semantic_id_list_element)
+    elif isinstance(elem, aas_types.RelationshipElement):
+        # NOTE (mristin):
+        # This also covers the annotated relationship elements.
+        references.append(elem.first)
+        references.append(elem.second)
+    elif isinstance(elem, aas_types.BasicEventElement):
+        references.append(elem.observed)
+        references.append(elem.message_broker)
+    elif isinstance(elem, aas_types.Entity):
+        for specific_asset_id in elem.over_specific_asset_ids_or_empty():
+            references.append(specific_asset_id.semantic_id)
+            references.extend(
+                specific_asset_id.over_supplemental_semantic_ids_or_empty()
+            )
+            references.append(specific_asset_id.external_subject_id)
 
     for reference in references:
         yield from _check_reference_for_whitespace(reference)
@@ -533,30 +541,14 @@ class _WhitespaceChecker:
         for text in _check_attributes_for_surrounding_whitespace(that):
             yield Message(level=Level.WARNING, text=text, path=Path(self._path[:]))
 
-        if isinstance(that, aas_types.SubmodelElementList):
-            for i, child in enumerate(that.over_value_or_empty()):
-                self._path.append(i)
-                try:
-                    yield from self._check_submodel_element_recursively(child)
-                finally:
-                    self._path.pop()
+        for child, fragment in _over_nested_elements(that):
+            self._path.append(fragment)
+            try:
+                yield from self._check_submodel_element_recursively(child)
+            finally:
+                self._path.pop()
 
-        elif isinstance(that, aas_types.SubmodelElementCollection):
-            for child in that.over_value_or_empty():
-                # NOTE (mristin):
-                # Though the meta-model requires all elements in a collection
-                # to have ID-short set, we make our code robust to possible template
-                # mistakes in order to avoid confusion for the end user and still
-                # report *something*.
-                self._path.append(child.id_short if child.id_short is not None else "")
-                try:
-                    yield from self._check_submodel_element_recursively(child)
-                finally:
-                    self._path.pop()
-        else:
-            pass
-
-        for message in _check_submodel_element_references(that):
+        for message in _check_references(that):
             yield Message(
                 level=Level.WARNING,
                 text=message,
@@ -577,13 +569,11 @@ class _WhitespaceChecker:
                     path=Path(self._path[:]),
                 )
 
-            for child in that.over_submodel_elements_or_empty():
-                # NOTE (mristin):
-                # Though the meta-model requires all elements in a submodel
-                # to have ID-short set, we make our code robust to possible template
-                # mistakes in order to avoid confusion for the end user and still
-                # report *something*.
-                self._path.append(child.id_short if child.id_short is not None else "")
+            for text in _check_references(that):
+                yield Message(level=Level.WARNING, text=text, path=Path(self._path[:]))
+
+            for child, fragment in _over_nested_elements(that):
+                self._path.append(fragment)
                 try:
                     yield from self._check_submodel_element_recursively(child)
                 finally:
@@ -748,14 +738,18 @@ def _determine_cardinality(
         raise AssertionError(f"Unexpected case {len(cardinality_qualifiers)=}")
 
 
+#: Submodel elements whose children form a composition, *i.e.*, where each child
+#: is expected to have a cardinality of either ``ZeroToOne`` or ``One``
+_COMPOSITIONS = (aas_types.SubmodelElementCollection, aas_types.Entity)
+
+
 def _verify_cardinality_recursively(
-    container: Union[aas_types.Submodel, aas_types.SubmodelElementCollection],
+    container: Union[
+        aas_types.Submodel, aas_types.SubmodelElementCollection, aas_types.Entity
+    ],
     prefix: Path,
 ) -> Iterator[Message]:
-    for elem, path in _over_elements_of_container_non_recursive(
-        container,
-        prefix,
-    ):
+    for elem, path in _over_nested_elements_with_paths(container, prefix):
         cardinality, cardinality_error = _determine_cardinality(elem)
         if cardinality_error is not None:
             yield Message(
@@ -817,18 +811,19 @@ def _verify_cardinality_recursively(
                         )
 
             for i, child in enumerate(elem.over_value_or_empty()):
-                if isinstance(child, aas_types.SubmodelElementCollection):
+                if isinstance(child, _COMPOSITIONS):
                     yield from _verify_cardinality_recursively(
                         container=child,
                         prefix=Path(fragments=list(path.fragments) + [i]),
                     )
 
-        elif isinstance(elem, aas_types.SubmodelElementCollection):
+        elif isinstance(elem, _COMPOSITIONS):
             yield from _verify_cardinality_recursively(container=elem, prefix=path)
 
         else:
             # NOTE (mristin):
-            # Recursion is only possible on lists and collections.
+            # We do not check the cardinality of annotations of relationship elements
+            # and of operation variables as they do not form a composition.
             pass
 
 
@@ -838,8 +833,8 @@ def verify_cardinality(
     """
     Check that all elements have valid cardinality set.
 
-    We enforce that all children of submodels and collections can have either
-    ``ZeroToOne`` or ``One`` cardinality set.
+    We enforce that all children of submodels, collections and entities (*i.e.*,
+    their statements) can have either ``ZeroToOne`` or ``One`` cardinality set.
 
     When it comes to lists, the rules are still a bit blurry. For now, we only check
     lists containing a single prototype item element, and enforce that the item element
