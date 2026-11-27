@@ -31,8 +31,10 @@ from aas_core3 import (
 )
 from icontract import require
 
-import aas_smt_lint.main
-from aas_smt_lint.common import bullet_points, NonNegativeInt
+# NOTE (mristin):
+# The IDTA submodel templates in the test data are given in AAS V3.0.
+import aas_smt_lint.v3_0
+from aas_smt_lint.common import bullet_points, Message, NonNegativeInt
 
 
 # pylint: disable=missing-docstring
@@ -63,7 +65,7 @@ class ReadAndDeserializeEnvironment(fsdag.Node[aas_types.Environment]):
 
     def _compute(self) -> aas_types.Environment:
         environment, read_or_deserialize_error = (
-            aas_smt_lint.main.read_and_deserialize_environment(self.serialized_path)
+            aas_smt_lint.v3_0.read_and_deserialize_environment(self.serialized_path)
         )
 
         if read_or_deserialize_error is not None:
@@ -144,7 +146,7 @@ class MergeEnvironments(fsdag.Node[MergedEnvironmentAndIdMapping]):
 
     def _compute(self) -> MergedEnvironmentAndIdMapping:
         big_environment, id_to_path, merge_errors = (
-            aas_smt_lint.main.merge_environments(
+            aas_smt_lint.v3_0.merge_environments(
                 environments=[
                     environment_node.resolve()
                     for environment_node in self.environment_nodes
@@ -167,14 +169,10 @@ class MergeEnvironments(fsdag.Node[MergedEnvironmentAndIdMapping]):
         )
 
 
-class VerificationNode(
-    fsdag.Node[Mapping[pathlib.Path, Sequence[aas_smt_lint.main.Message]]]
-):
+class VerificationNode(fsdag.Node[Mapping[pathlib.Path, Sequence[Message]]]):
     def __init__(
         self,
-        verification_func: Callable[
-            [aas_types.Environment], Iterator[aas_smt_lint.main.Message]
-        ],
+        verification_func: Callable[[aas_types.Environment], Iterator[Message]],
         merged_environment_node: fsdag.Node[MergedEnvironmentAndIdMapping],
         messages_path: pathlib.Path,
     ):
@@ -186,14 +184,12 @@ class VerificationNode(
     def _path(self) -> pathlib.Path:
         return self.messages_path
 
-    def _save(
-        self, artefact: Mapping[pathlib.Path, Sequence[aas_smt_lint.main.Message]]
-    ) -> None:
+    def _save(self, artefact: Mapping[pathlib.Path, Sequence[Message]]) -> None:
         with self.messages_path.open("wb") as fid:
             # noinspection PyTypeChecker
             pickle.dump(artefact, fid)
 
-    def _load(self) -> Mapping[pathlib.Path, Sequence[aas_smt_lint.main.Message]]:
+    def _load(self) -> Mapping[pathlib.Path, Sequence[Message]]:
         with self.messages_path.open("rb") as fid:
             # noinspection PyTypeChecker
             result = pickle.load(fid)
@@ -204,21 +200,17 @@ class VerificationNode(
                 isinstance(value, collections.abc.Sequence) for value in result.values()
             )
             assert all(
-                isinstance(message, aas_smt_lint.main.Message)
+                isinstance(message, Message)
                 for messages in result.values()
                 for message in messages
             )
 
-            return cast(
-                Mapping[pathlib.Path, Sequence[aas_smt_lint.main.Message]], result
-            )
+            return cast(Mapping[pathlib.Path, Sequence[Message]], result)
 
-    def _compute(self) -> Mapping[pathlib.Path, Sequence[aas_smt_lint.main.Message]]:
+    def _compute(self) -> Mapping[pathlib.Path, Sequence[Message]]:
         merged_environment = self.merged_environment_node.resolve()
 
-        path_to_messages = (
-            dict()
-        )  # type: MutableMapping[pathlib.Path, List[aas_smt_lint.main.Message]]
+        path_to_messages = dict()  # type: MutableMapping[pathlib.Path, List[Message]]
 
         # NOTE (mristin):
         # We explicitly record empty messages for submodel templates in order to track
@@ -452,50 +444,50 @@ def main() -> int:
 
     for verification_func, identifier, title in [
         (
-            aas_smt_lint.main.verify_redefinitions,
+            aas_smt_lint.v3_0.verify_redefinitions,
             "redefinition",
             "Structure re-definitions",
         ),
         (
-            aas_smt_lint.main.verify_whitespace,
+            aas_smt_lint.v3_0.verify_whitespace,
             "unexpected_whitespace",
             "Unexpected whitespace",
         ),
         (
-            aas_smt_lint.main.verify_deprecated,
+            aas_smt_lint.v3_0.verify_deprecated,
             "deprecated_types",
             "Deprecated types",
         ),
         (
-            aas_smt_lint.main.verify_qualifier_kinds,
+            aas_smt_lint.v3_0.verify_qualifier_kinds,
             "incorrect_qualifier_kinds",
             "Incorrect qualifier kinds",
         ),
         (
-            aas_smt_lint.main.verify_arbitraries,
+            aas_smt_lint.v3_0.verify_arbitraries,
             "arbitrary_structures",
             "Arbitrary structures",
         ),
         (
-            aas_smt_lint.main.verify_cardinality,
+            aas_smt_lint.v3_0.verify_cardinality,
             "unexpected_cardinality",
             "Unexpected cardinalities",
         ),
         (
-            aas_smt_lint.main.verify_id_shorts_for_plural_singular,
+            aas_smt_lint.v3_0.verify_id_shorts_for_plural_singular,
             "unexpected_id_shorts",
             "Unexpected ID-shorts",
         ),
         (
-            aas_smt_lint.main.verify_dangling_references,
+            aas_smt_lint.v3_0.verify_dangling_references,
             "dangling_references",
             "Dangling references",
         ),
         (
             lambda environment: itertools.chain(
-                aas_smt_lint.main.verify_no_xs_integer(environment),
-                aas_smt_lint.main.verify_no_xs_decimal(environment),
-                aas_smt_lint.main.verify_no_xs_float(environment),
+                aas_smt_lint.v3_0.verify_no_xs_integer(environment),
+                aas_smt_lint.v3_0.verify_no_xs_decimal(environment),
+                aas_smt_lint.v3_0.verify_no_xs_float(environment),
             ),
             "unexpected_precision",
             "Unexpected numeric precision",

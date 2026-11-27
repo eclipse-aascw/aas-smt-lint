@@ -32,6 +32,7 @@ authors = [
 dependencies = [
     "icontract>=2,<3",
     "aas-core3.0",
+    "aas-core3.1",
     "inflect==7.5.0"
 ]
 
@@ -42,7 +43,10 @@ dev = [
     "pylint==3.3.8",
     "requests==2.32.4",
     "types-requests==2.32.4.20250913",
-    "reuse==6.3.0"
+    "reuse==6.3.0",
+    # NOTE (mristin):
+    # We pin asttokens below 3 to stay compatible with icontract.
+    "asttokens==2.4.1"
 ]
 
 impact_analysis = [

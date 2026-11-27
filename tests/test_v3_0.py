@@ -1,0 +1,806 @@
+# SPDX-FileCopyrightText: 2025 aas-smt-lint AUTHORS
+#
+# SPDX-License-Identifier: MIT
+
+# pylint: disable=missing-docstring
+
+
+import unittest
+from typing import Iterator
+
+import aas_core3.types as aas_types
+import aas_core3.xmlization as aas_xmlization
+
+from aas_smt_lint.common import Message, Level
+
+# noinspection PyProtectedMember
+from aas_smt_lint.v3_0 import (
+    _deserialize_environment,
+    _WhitespaceChecker,
+    verify_cardinality,
+    verify_id_shorts_for_plural_singular,
+    verify_dangling_references,
+)
+
+
+class TestDeserializeEnvironment(unittest.TestCase):
+    def test_empty_text(self) -> None:
+        environment, error = _deserialize_environment("")
+        self.assertIsNone(environment)
+        self.assertEqual(error, "No text to be parsed")
+
+    def test_whitespace_only(self) -> None:
+        environment, error = _deserialize_environment("   \n\t  ")
+        self.assertIsNone(environment)
+        self.assertEqual(error, "No text to be parsed")
+
+    def test_invalid_json(self) -> None:
+        environment, error = _deserialize_environment('{"invalid": json}')
+        self.assertIsNone(environment)
+        assert error is not None
+        self.assertIn("Failed to parse JSON", error)
+
+    def test_unrecognized_format(self) -> None:
+        environment, error = _deserialize_environment("random text")
+        self.assertIsNone(environment)
+        assert error is not None
+        self.assertIn("Unrecognized first character", error)
+
+    def test_valid_json_environment(self) -> None:
+        json_text = '{"submodels": []}'
+        environment, error = _deserialize_environment(json_text)
+        self.assertIsNone(error)
+        assert environment is not None
+        self.assertIsInstance(environment, aas_types.Environment)
+
+    def test_valid_xml_environment(self) -> None:
+        xml_text = f'<environment xmlns="{aas_xmlization.NAMESPACE}"/>'
+        environment, error = _deserialize_environment(xml_text)
+        self.assertIsNone(error)
+        assert environment is not None
+        self.assertIsInstance(environment, aas_types.Environment)
+
+    def test_xml_environment_in_wrong_namespace(self) -> None:
+        xml_text = '<environment xmlns="https://example.com/not-aas"/>'
+        environment, error = _deserialize_environment(xml_text)
+        self.assertIsNone(environment)
+        self.assertEqual(
+            "The root element is in the XML namespace 'https://example.com/not-aas', "
+            f"but expected the namespace {aas_xmlization.NAMESPACE!r}; "
+            "did you specify the correct AAS version?",
+            error,
+        )
+
+
+def messages_to_string(messages: Iterator[Message]) -> str:
+    """Convert iterator of messages to newline-joined lines with format '{path}: {text}'."""
+    return "\n".join(f"{msg.path}: {msg.text}" for msg in messages)
+
+
+class TestWhitespaceChecker(unittest.TestCase):
+    def test_clean_submodel_no_warnings(self) -> None:
+        submodel = aas_types.Submodel(
+            id="clean_submodel", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        self.assertEqual("", result)
+
+    def test_submodel_with_leading_whitespace_in_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id=" leading_space", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = " leading_space: Surrounding whitespace in id"
+        self.assertEqual(expected, result)
+
+    def test_submodel_with_trailing_whitespace_in_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id="trailing_space ", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "trailing_space : Surrounding whitespace in id"
+        self.assertEqual(expected, result)
+
+    def test_submodel_with_whitespace_in_middle_of_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id="has space inside", kind=aas_types.ModellingKind.TEMPLATE
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "has space inside: Whitespace in the middle of submodel id"
+        self.assertEqual(expected, result)
+
+    def test_property_with_leading_whitespace_in_value(self) -> None:
+        prop = aas_types.Property(
+            id_short="test_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value=" leading_space",
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "test_submodel.test_prop: Surrounding whitespace in value"
+        self.assertEqual(expected, result)
+
+    def test_property_with_trailing_whitespace_in_value(self) -> None:
+        prop = aas_types.Property(
+            id_short="test_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="trailing_space ",
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = "test_submodel.test_prop: Surrounding whitespace in value"
+        self.assertEqual(expected, result)
+
+    def test_multiple_whitespace_issues(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value=" bad_value ",
+        )
+        submodel = aas_types.Submodel(
+            id=" bad_submodel ",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+ bad_submodel : Surrounding whitespace in id
+ bad_submodel .bad_prop: Surrounding whitespace in value"""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_with_whitespace_error_in_qualifier(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    semantic_id=aas_types.Reference(
+                        type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                        keys=[
+                            aas_types.Key(
+                                type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                                value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                            ),
+                        ],
+                    ),
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_with_whitespace_in_semantic_id(self) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_with_whitespace_in_supplemental_semantic_ids(
+        self,
+    ) -> None:
+        prop = aas_types.Property(
+            id_short="bad_prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+            supplemental_semantic_ids=[
+                aas_types.Reference(
+                    type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                    keys=[
+                        aas_types.Key(
+                            type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                            value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                        ),
+                    ],
+                ),
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_submodel_element_list_with_whitespace_in_semantic_id_list_element(
+        self,
+    ) -> None:
+        prop = aas_types.Property(
+            id_short="prop",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            value="value",
+        )
+        sml = aas_types.SubmodelElementList(
+            id_short="bad_list",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            semantic_id_list_element=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+            value=[prop],
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[sml],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.bad_list: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+    def test_reference_element_with_whitespace_in_value(self) -> None:
+        prop = aas_types.ReferenceElement(
+            id_short="prop",
+            value=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/ SubmodelTemplates/Cardinality/1/0",
+                    ),
+                ],
+            ),
+        )
+        submodel = aas_types.Submodel(
+            id="bad_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        checker = _WhitespaceChecker()
+        result = messages_to_string(checker.check_submodel(submodel))
+        expected = """\
+bad_submodel.prop: Whitespace in the middle of a key value."""
+        self.assertEqual(expected, result)
+
+
+class TestVerifyIdShortsForPluralSingular(unittest.TestCase):
+    def test_submodel_element_list_with_singular_id_short(self) -> None:
+        submodel_list = aas_types.SubmodelElementList(
+            id_short="item",
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[submodel_list],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in plural for aggregations, "
+            "but got singular: 'item'",
+        )
+
+    def test_property_with_plural_id_short(self) -> None:
+        prop = aas_types.Property(
+            id_short="items",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in singular for non-aggregations, "
+            "but got plural for Property: 'items'",
+        )
+
+    def test_submodel_element_list_with_plural_id_short_no_error(self) -> None:
+        submodel_list = aas_types.SubmodelElementList(
+            id_short="items",
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[submodel_list],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_property_with_singular_id_short_no_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="item",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_camel_case_with_underscore_plural_for_property(self) -> None:
+        prop = aas_types.Property(
+            id_short="dataItems",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_id_shorts_for_plural_singular(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected the ID-short in singular for non-aggregations, "
+            "but got plural for Property: 'dataItems'",
+        )
+
+
+class TestVerifyDanglingReferences(unittest.TestCase):
+    def test_no_dangling_references_no_errors(self) -> None:
+        collection_as_definition = aas_types.SubmodelElementCollection(
+            id_short="test_collection",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/test_collection",
+                    )
+                ],
+            ),
+            value=[
+                aas_types.Property(
+                    id_short="test_prop",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                )
+            ],
+        )
+
+        collection_as_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection_ref",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/test_collection",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_as_definition, collection_as_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_dangling_reference_error(self) -> None:
+        collection_as_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection_ref",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/nonexistent_collection",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_as_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.ERROR)
+        self.assertEqual(
+            "The collection references the structure "
+            "https://example.com/nonexistent_collection through its semantic ID, "
+            "but the structure has not been previously defined (neither as submodel "
+            "template nor as embedded submodel element collection).",
+            messages[0].text,
+        )
+
+    def test_collection_with_invalid_semantic_id_error(self) -> None:
+        collection_semantic_id_model_reference = aas_types.SubmodelElementCollection(
+            id_short="test_collection",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.MODEL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.SUBMODEL,
+                        value="invalid_reference",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_semantic_id_model_reference],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.ERROR)
+        self.assertEqual(
+            "The semantic ID of the submodel element collection "
+            "with ID-short 'test_collection' was expected to be an external reference "
+            "with a single global reference key, but it was "
+            "not: {'type': 'ModelReference', "
+            "'keys': [{'type': 'Submodel', 'value': 'invalid_reference'}]}",
+            messages[0].text,
+        )
+
+    def test_multiple_dangling_references(self) -> None:
+        collection_dangling_ref1 = aas_types.SubmodelElementCollection(
+            id_short="ref1",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/missing1",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        collection_dangling_ref2 = aas_types.SubmodelElementCollection(
+            id_short="ref2",
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://example.com/missing2",
+                    )
+                ],
+            ),
+            value=[],
+        )
+
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[collection_dangling_ref1, collection_dangling_ref2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(len(messages), 2)
+        self.assertTrue(all(msg.level == Level.ERROR for msg in messages))
+        self.assertEqual(
+            "The collection references the structure https://example.com/missing1 "
+            "through its semantic ID, but the structure has not been previously "
+            "defined (neither as submodel template nor as embedded submodel element "
+            "collection).",
+            messages[0].text,
+        )
+        self.assertEqual(
+            "The collection references the structure https://example.com/missing2 "
+            "through its semantic ID, but the structure has not been previously "
+            "defined (neither as submodel template nor as embedded submodel element "
+            "collection).",
+            messages[1].text,
+        )
+
+
+class TestVerifyCardinality(unittest.TestCase):
+    def test_no_cardinality_no_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="dataItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_allowed_cardinality_no_error(self) -> None:
+        prop_1 = aas_types.Property(
+            id_short="mandatoryItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="One",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        prop_2 = aas_types.Property(
+            id_short="optionalItem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop_1, prop_2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_list_cardinality_no_error(self) -> None:
+        item_1 = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="OneToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_1 = aas_types.SubmodelElementList(
+            id_short="OptionalList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item_1],
+        )
+
+        item_2 = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="OneToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_2 = aas_types.SubmodelElementList(
+            id_short="MandatoryList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="One",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item_2],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[list_1, list_2],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_arbitrary_cardinality_no_error(self) -> None:
+        arbitrary = aas_types.Property(
+            id_short="arbitrary",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            semantic_id=aas_types.Reference(
+                type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+                keys=[
+                    aas_types.Key(
+                        type=aas_types.KeyTypes.GLOBAL_REFERENCE,
+                        value="https://admin-shell.io/SMT/General/Arbitrary",
+                    )
+                ],
+            ),
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[arbitrary],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 0)
+
+    def test_invalid_cardinality_error(self) -> None:
+        prop = aas_types.Property(
+            id_short="propertyElem",
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[prop],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Unexpected cardinality of 'ZeroToMany'; only 'ZeroToOne' or 'One' "
+            "are expected for an element of a composition",
+        )
+
+    def test_list_item_zero_to_many_cardinality_warning(self) -> None:
+        # NOTE (mristin):
+        # To our current understanding, there is no case where zero-to-many cardinality
+        # can be used. To model it, you make a list zero-to-many. However, the template
+        # item contained in the list should always have one-to-many, as AAS lists
+        # *can not* be empty (only omitted/not specified).
+        #
+        # This is due to the constraint in the meta-model:
+        # https://aas-core-works.github.io/aas-core-meta/v3/SubmodelElementList.html#invariants
+        #
+        # "Value must be either not set or have at least one item."
+
+        item = aas_types.Property(
+            value_type=aas_types.DataTypeDefXSD.STRING,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToMany",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+        )
+        list_element = aas_types.SubmodelElementList(
+            id_short="TestList",
+            value_type_list_element=aas_types.DataTypeDefXSD.STRING,
+            type_value_list_element=aas_types.AASSubmodelElements.PROPERTY,
+            qualifiers=[
+                aas_types.Qualifier(
+                    type="SMT/Cardinality",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    value="ZeroToOne",
+                    kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+                )
+            ],
+            value=[item],
+        )
+        submodel = aas_types.Submodel(
+            id="test_submodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[list_element],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_cardinality(environment))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level, Level.WARNING)
+        self.assertEqual(
+            messages[0].text,
+            "Expected cardinality of 'OneToMany' for a template item of a list, "
+            "but got 'ZeroToMany'",
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()
