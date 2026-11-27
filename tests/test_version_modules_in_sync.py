@@ -66,6 +66,21 @@ PAIRS: Sequence[_Pair] = [
             ("aas_smt_lint.v3_0", "aas_smt_lint.v3_1"),
         ],
     ),
+    _Pair(
+        reference=REPO_ROOT / "aas_smt_lint" / "v3_1.py",
+        other=REPO_ROOT / "aas_smt_lint" / "v3_2.py",
+        import_replacements=[
+            ("aas_core3_2", "aas_core3_1"),
+        ],
+    ),
+    _Pair(
+        reference=REPO_ROOT / "tests" / "test_v3_1.py",
+        other=REPO_ROOT / "tests" / "test_v3_2.py",
+        import_replacements=[
+            ("aas_core3_2", "aas_core3_1"),
+            ("aas_smt_lint.v3_2", "aas_smt_lint.v3_1"),
+        ],
+    ),
 ]
 
 #: Top-level definitions which are allowed to differ, mapped from the file

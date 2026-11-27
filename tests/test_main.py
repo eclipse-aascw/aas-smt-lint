@@ -16,6 +16,7 @@ import aas_smt_lint.main
 
 _NAMESPACE_V3_0 = "https://admin-shell.io/aas/3/0"
 _NAMESPACE_V3_1 = "https://admin-shell.io/aas/3/1"
+_NAMESPACE_V3_2 = "https://admin-shell.io/aas/3/2"
 
 
 def _run_main(args: List[str]) -> Tuple[int, str]:
@@ -57,6 +58,23 @@ class TestMain(unittest.TestCase):
 
         self.assertEqual("", stderr)
         self.assertEqual(0, exit_code)
+
+    def test_v3_2_xml_with_explicit_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_empty_xml_environment(pathlib.Path(tmp_dir), _NAMESPACE_V3_2)
+            exit_code, stderr = _run_main(["--aas-version", "3.2", path])
+
+        self.assertEqual("", stderr)
+        self.assertEqual(0, exit_code)
+
+    def test_v3_2_xml_with_default_version_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_empty_xml_environment(pathlib.Path(tmp_dir), _NAMESPACE_V3_2)
+            exit_code, stderr = _run_main([path])
+
+        self.assertEqual(1, exit_code)
+        self.assertIn(f"in the XML namespace {_NAMESPACE_V3_2!r}", stderr)
+        self.assertIn("did you specify the correct AAS version?", stderr)
 
     def test_v3_0_xml_with_default_version_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
