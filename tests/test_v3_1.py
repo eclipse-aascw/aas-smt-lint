@@ -20,6 +20,7 @@ from aas_smt_lint.v3_1 import (
     verify_cardinality,
     verify_id_shorts_for_plural_singular,
     verify_dangling_references,
+    verify_redefinitions,
 )
 
 
@@ -799,6 +800,214 @@ class TestVerifyCardinality(unittest.TestCase):
             messages[0].text,
             "Expected cardinality of 'OneToMany' for a template item of a list, "
             "but got 'ZeroToMany'",
+        )
+
+
+def _external_reference(value: str) -> aas_types.Reference:
+    return aas_types.Reference(
+        type=aas_types.ReferenceTypes.EXTERNAL_REFERENCE,
+        keys=[aas_types.Key(type=aas_types.KeyTypes.GLOBAL_REFERENCE, value=value)],
+    )
+
+
+def _property_with_whitespace(id_short: str) -> aas_types.Property:
+    return aas_types.Property(
+        id_short=id_short,
+        value_type=aas_types.DataTypeDefXSD.STRING,
+        value=" leading",
+    )
+
+
+def _cardinality_qualifier(value: str) -> aas_types.Qualifier:
+    return aas_types.Qualifier(
+        type="SMT/Cardinality",
+        value_type=aas_types.DataTypeDefXSD.STRING,
+        value=value,
+        kind=aas_types.QualifierKind.TEMPLATE_QUALIFIER,
+    )
+
+
+class TestNestingBeyondListsAndCollections(unittest.TestCase):
+    """Check that the elements nested in entities, annotations and operations are linted."""
+
+    def test_whitespace_in_entity_statement(self) -> None:
+        entity = aas_types.Entity(
+            id_short="someEntity",
+            entity_type=aas_types.EntityType.SELF_MANAGED_ENTITY,
+            statements=[_property_with_whitespace("someProperty")],
+        )
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[entity],
+        )
+
+        result = messages_to_string(_WhitespaceChecker().check_submodel(submodel))
+        self.assertEqual(
+            "someSubmodel.someEntity.someProperty: Surrounding whitespace in value",
+            result,
+        )
+
+    def test_whitespace_in_annotation(self) -> None:
+        relationship = aas_types.AnnotatedRelationshipElement(
+            id_short="someRelationship",
+            first=_external_reference("https://example.com/first"),
+            second=_external_reference("https://example.com/second "),
+            annotations=[_property_with_whitespace("someAnnotation")],
+        )
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[relationship],
+        )
+
+        result = messages_to_string(_WhitespaceChecker().check_submodel(submodel))
+        self.assertEqual(
+            "someSubmodel.someRelationship.someAnnotation: "
+            "Surrounding whitespace in value\n"
+            "someSubmodel.someRelationship: Surrounding whitespace in a key value.",
+            result,
+        )
+
+    def test_whitespace_in_operation_variables(self) -> None:
+        operation = aas_types.Operation(
+            id_short="someOperation",
+            input_variables=[
+                aas_types.OperationVariable(
+                    value=_property_with_whitespace("someInput")
+                )
+            ],
+            output_variables=[
+                aas_types.OperationVariable(
+                    value=_property_with_whitespace("someOutput")
+                )
+            ],
+            inoutput_variables=[
+                aas_types.OperationVariable(
+                    value=_property_with_whitespace("someInOutput")
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[operation],
+        )
+
+        result = messages_to_string(_WhitespaceChecker().check_submodel(submodel))
+        self.assertEqual(
+            "someSubmodel.someOperation.someInput: Surrounding whitespace in value\n"
+            "someSubmodel.someOperation.someOutput: Surrounding whitespace in value\n"
+            "someSubmodel.someOperation.someInOutput: Surrounding whitespace in value",
+            result,
+        )
+
+    def test_whitespace_in_submodel_semantic_id(self) -> None:
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            semantic_id=_external_reference("https://example.com/some submodel"),
+        )
+
+        result = messages_to_string(_WhitespaceChecker().check_submodel(submodel))
+        self.assertEqual(
+            "someSubmodel: Whitespace in the middle of a key value.", result
+        )
+
+    def test_cardinality_in_entity_statement(self) -> None:
+        entity = aas_types.Entity(
+            id_short="someEntity",
+            entity_type=aas_types.EntityType.SELF_MANAGED_ENTITY,
+            statements=[
+                aas_types.Property(
+                    id_short="someProperty",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                    qualifiers=[_cardinality_qualifier("ZeroToMany")],
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[entity],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        result = messages_to_string(verify_cardinality(environment))
+        self.assertEqual(
+            "someSubmodel.someEntity.someProperty: "
+            "Unexpected cardinality of 'ZeroToMany'; only 'ZeroToOne' or 'One' "
+            "are expected for an element of a composition",
+            result,
+        )
+
+    def test_dangling_reference_in_entity_statement(self) -> None:
+        entity = aas_types.Entity(
+            id_short="someEntity",
+            entity_type=aas_types.EntityType.SELF_MANAGED_ENTITY,
+            statements=[
+                aas_types.SubmodelElementCollection(
+                    id_short="someCollection",
+                    semantic_id=_external_reference("https://example.com/undefined"),
+                )
+            ],
+        )
+        submodel = aas_types.Submodel(
+            id="someSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[entity],
+        )
+        environment = aas_types.Environment(submodels=[submodel])
+
+        messages = list(verify_dangling_references(environment))
+        self.assertEqual(1, len(messages))
+        self.assertEqual(
+            "someSubmodel.someEntity.someCollection", str(messages[0].path)
+        )
+
+
+class TestVerifyRedefinitions(unittest.TestCase):
+    def test_collection_redefining_submodel(self) -> None:
+        defined_submodel = aas_types.Submodel(
+            id="https://example.com/someStructure",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[
+                aas_types.Property(
+                    id_short="someProperty",
+                    value_type=aas_types.DataTypeDefXSD.STRING,
+                )
+            ],
+        )
+        redefining_submodel = aas_types.Submodel(
+            id="https://example.com/anotherSubmodel",
+            kind=aas_types.ModellingKind.TEMPLATE,
+            submodel_elements=[
+                aas_types.SubmodelElementCollection(
+                    id_short="someCollection",
+                    semantic_id=_external_reference(
+                        "https://example.com/someStructure"
+                    ),
+                    value=[
+                        aas_types.Property(
+                            id_short="someProperty",
+                            value_type=aas_types.DataTypeDefXSD.STRING,
+                        )
+                    ],
+                )
+            ],
+        )
+        environment = aas_types.Environment(
+            submodels=[defined_submodel, redefining_submodel]
+        )
+
+        result = messages_to_string(verify_redefinitions(environment))
+        self.assertEqual(
+            "https://example.com/anotherSubmodel.someCollection: "
+            "Conflicting re-definition of the identifier "
+            "https://example.com/someStructure for this submodel element "
+            "collection with non-empty elements and the instance at "
+            "https://example.com/someStructure",
+            result,
         )
 
 
